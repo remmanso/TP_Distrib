@@ -30,8 +30,7 @@ public class Server {
 			System.out.println("Le serveur est à l'écoute du port "+socketserver.getLocalPort());
 			
 	    	socketduserveur = socketserver.accept(); 
-		    in = new DataInputStream(socketduserveur.getInputStream());
-			out = new DataOutputStream(socketduserveur.getOutputStream());
+		    
 			int b_read = in.read(down_packet);
 	        System.out.println(b_read);
 	        out.write(ack_packet);

@@ -2,7 +2,6 @@ import java.util.TimerTask;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.net.SocketException;
@@ -35,6 +34,7 @@ public class TimerPing extends TimerTask
 			in = socket.getInputStream();
 			out.write(b);
 			b_read = in.read(b);
+			
 
 			time = System.nanoTime() - time;
 			double time_ms = (double) time / 1000000.0;
