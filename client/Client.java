@@ -1,7 +1,7 @@
 import java.*;
 import java.util.Timer; 
 
-public class PingClient {
+public class Client {
 	
 	public static void main(String[] args) {
 		if (args.length < 1) {
