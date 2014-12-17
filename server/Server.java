@@ -28,18 +28,12 @@ public class Server {
 		try {
 			socketserver = new ServerSocket(2009);
 			System.out.println("Le serveur est à l'écoute du port "+socketserver.getLocalPort());
-			
-	    	socketduserveur = socketserver.accept(); 
-		    
-			int b_read = in.read(down_packet);
-	        System.out.println(b_read);
-	        out.write(ack_packet);
-			// (b_read==1)?ack_packet:down_packet 
-	        b_read = in.read(down_packet);
-	        out.write(down_packet);
-	        out.flush();
-	        socketduserveur.close();		       
-			socketserver.close();
+			while (true){
+		    	socketduserveur = socketserver.accept(); 
+			    
+				Thread t = new Thread(new ServerManager(socketduserveur));
+				t.start();
+			}
 		}catch (IOException e) {
 			e.printStackTrace();
 		}

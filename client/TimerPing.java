@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.net.SocketException;
 
@@ -22,10 +23,13 @@ public class TimerPing extends TimerTask
 			OutputStream out;
 			long time;
 			int b_read = 0;
-			byte b[] = new byte[64];
+			byte b[]= "000102030405060708091011121314151617181920212223242526272829".getBytes();
+			String s = new String(b);
+			s = "ping".concat(s);
+			b = s.getBytes();
 
 			socket = new Socket(this.addresse, 2009);  
-			socket.setSoTimeout(500); 
+			socket.setSoTimeout(1000); 
 
 			System.out.println("Ping process...");
 
@@ -33,6 +37,7 @@ public class TimerPing extends TimerTask
 			out = socket.getOutputStream();
 			in = socket.getInputStream();
 			out.write(b);
+			System.out.println("envoie de bn_octet : " + b.length + "chaine : " + s);
 			b_read = in.read(b);
 			
 
@@ -46,7 +51,7 @@ public class TimerPing extends TimerTask
 		}catch (UnknownHostException e) {
 			
 			e.printStackTrace();
-		}catch (SocketException e) {
+		}catch (SocketTimeoutException e) {
 
 			System.out.println("Request ping time out");
 		}catch (IOException e) {
