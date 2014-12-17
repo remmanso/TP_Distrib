@@ -13,7 +13,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.io.PrintWriter;
 
-public class ServerPing {
+public class Server {
 	
 	public static void main(String[] zero) {
 		
