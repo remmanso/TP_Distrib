@@ -2,6 +2,7 @@ import java.util.TimerTask;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -10,9 +11,11 @@ import java.net.SocketException;
 public class TimerPing extends TimerTask 
 {
 	private String addresse;
+	private int port;
 
-	public TimerPing(String ad) {
+	public TimerPing(String ad, int port) {
 		addresse = ad;
+		this.port = port;
 	}
 
 	public void run(){
@@ -28,7 +31,7 @@ public class TimerPing extends TimerTask
 			s = "ping".concat(s);
 			b = s.getBytes();
 
-			socket = new Socket(this.addresse, 2009);  
+			socket = new Socket(this.addresse, port);  
 			socket.setSoTimeout(1000); 
 
 			System.out.println("Ping process...");
@@ -43,7 +46,7 @@ public class TimerPing extends TimerTask
 
 			time = System.nanoTime() - time;
 			double time_ms = (double) time / 1000000.0;
-			System.out.println("nb octet reçu : " + b_read + " en " + time_ms + "ms ");
+			System.out.println("nb octet re��u : " + b_read + " en " + time_ms + "ms ");
 			
 			socket.close();
 
@@ -51,6 +54,9 @@ public class TimerPing extends TimerTask
 		}catch (UnknownHostException e) {
 			
 			e.printStackTrace();
+		}catch (ConnectException e) {
+			
+			System.out.println("Connection perdue");
 		}catch (SocketTimeoutException e) {
 
 			System.out.println("Request ping time out");

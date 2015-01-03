@@ -5,12 +5,12 @@ public class Client {
 	
 	public static void main(String[] args) {
 		if (args.length < 1) {
-			System.out.println("veuillez insérer un argument [adresse] puis:\n1 pour ping, \n2 pour Netperf");
+			System.out.println("veuillez ins��rer un argument [adresse] puis:\n1 pour ping, \n2 pour Netperf");
 			return;
 		}
 
 		if (args[1].equals("1")){
-			TimerPing t_ping = new TimerPing(args[0]);
+			TimerPing t_ping = new TimerPing(args[0], 2009);
 			Timer timer = new Timer();
 			timer.scheduleAtFixedRate(t_ping, 0, 1000);
 		}
