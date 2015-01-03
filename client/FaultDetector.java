@@ -11,11 +11,15 @@ import java.util.Timer;
 public class FaultDetector {
 
 	public static void main(String[] args) {
-		if (args.length < 5) {
+		if (args.length < 2) {
 			System.out.println("veuillez insérer un argument 4 adresses");
 			return;
 		}
-		TimerPing t_ping = new TimerPing(args[0], 2009);
+		TimerPing t_ping;
+		if (args[1].equals("1"))
+			t_ping = new TimerPing(args[0], 2008);
+		else 
+			t_ping = new TimerPing(args[0], 2009);
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(t_ping, 10000, 1000);
 		/*t_ping = new TimerPing(args[1], 2009);
@@ -29,11 +33,10 @@ public class FaultDetector {
 		Socket socketduserveur ;
 				
 		try {
-			/*if (args[4].equals("1"))
+			if (args[1].equals("1"))
 				socketserver = new ServerSocket(2009);
 			else 
-				socketserver = new ServerSocket(20008);*/
-			socketserver = new ServerSocket(2009);
+				socketserver = new ServerSocket(2008);
 			System.out.println("Le serveur est à l'écoute du port "+socketserver.getLocalPort());
 			while (true){
 		    	socketduserveur = socketserver.accept(); 
