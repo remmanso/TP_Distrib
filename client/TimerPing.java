@@ -54,9 +54,9 @@ public class TimerPing extends TimerTask
 		}catch (UnknownHostException e) {
 			
 			e.printStackTrace();
-		}catch (ConnectException e) {
+		/*}catch (ConnectException e) {
 			
-			System.out.println("Connection perdue");
+			System.out.println("Connection perdue");*/
 		}catch (SocketTimeoutException e) {
 
 			System.out.println("Request ping time out");
