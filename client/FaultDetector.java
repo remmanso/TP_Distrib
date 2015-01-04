@@ -1,10 +1,7 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Timer;
 
 
@@ -15,11 +12,16 @@ public class FaultDetector {
 			System.out.println("veuillez insérer un argument 4 adresses");
 			return;
 		}
+		
+		HashMap<String, Boolean> context = new HashMap<String, Boolean>();
+		context.put("LocalHost", true);
+		context.put(args[0], true);
+		
 		TimerPing t_ping;
 		if (args[1].equals("1"))
-			t_ping = new TimerPing(args[0], 2008);
+			t_ping = new TimerPing(args[0], 2008, context);
 		else 
-			t_ping = new TimerPing(args[0], 2009);
+			t_ping = new TimerPing(args[0], 2009, context);
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(t_ping, 10000, 1000);
 		/*t_ping = new TimerPing(args[1], 2009);

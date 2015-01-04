@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.TimerTask;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,12 +13,19 @@ public class TimerPing extends TimerTask
 {
 	private String addresse;
 	private int port;
+	private HashMap<String, Boolean> context;
 
 	public TimerPing(String ad, int port) {
 		addresse = ad;
 		this.port = port;
 	}
 
+	public TimerPing(String ad, int port, HashMap<String, Boolean> context) {
+		addresse = ad;
+		this.port = port;
+		this.context = context;
+	}
+	
 	public void run(){
 
 		try {
@@ -40,7 +48,7 @@ public class TimerPing extends TimerTask
 			out = socket.getOutputStream();
 			in = socket.getInputStream();
 			out.write(b);
-			System.out.println("envoie de bn_octet : " + b.length + "chaine : " + s);
+			System.out.println("envoie de nb octet : " + b.length);
 			b_read = in.read(b);
 			
 
@@ -57,6 +65,8 @@ public class TimerPing extends TimerTask
 		}catch (ConnectException e) {
 			
 			System.out.println("Connection perdue");
+			context.put(addresse, false);
+			System.out.println(context.toString());
 		}catch (SocketTimeoutException e) {
 
 			System.out.println("Request ping time out");
