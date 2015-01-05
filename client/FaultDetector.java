@@ -21,7 +21,7 @@ public class FaultDetector {
 		t_ping = new TimerPing(args[0], 2009, context);
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(t_ping, 10000, 1000);
-		/*t_ping = new TimerPing(args[1], 2009);
+		t_ping = new TimerPing(args[1], 2009);
 		timer.scheduleAtFixedRate(t_ping, 10000, 1000);
 		/*t_ping = new TimerPing(args[2]);
 		timer.scheduleAtFixedRate(t_ping, 10000, 1000);
