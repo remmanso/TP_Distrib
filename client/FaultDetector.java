@@ -8,25 +8,22 @@ import java.util.Timer;
 public class FaultDetector {
 
 	public static void main(String[] args) {
-		if (args.length < 1) {
+		if (args.length < 2) {
 			System.out.println("veuillez insérer un argument 4 adresses");
 			return;
 		}
 		
 		HashMap<String, Boolean> context = new HashMap<String, Boolean>();
 		context.put("LocalHost", true);
-		context.put(args[0], true);
+		for (int i = 0; i < args.length; i++)
+			context.put(args[i], true);
 		
 		TimerPing t_ping;
-		t_ping = new TimerPing(args[0], 2009, context);
 		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(t_ping, 10000, 1000);
-		t_ping = new TimerPing(args[1], 2009);
-		timer.scheduleAtFixedRate(t_ping, 10000, 1000);
-		/*t_ping = new TimerPing(args[2]);
-		timer.scheduleAtFixedRate(t_ping, 10000, 1000);
-		t_ping = new TimerPing(args[3]);
-		timer.scheduleAtFixedRate(t_ping, 10000, 1000);*/
+		for (int i = 0; i < args.length; i++) {
+			t_ping = new TimerPing(args[i], 2009, context);
+			timer.scheduleAtFixedRate(t_ping, 10000, 1000);
+		}
 		
 		ServerSocket socketserver  ;
 		Socket socketduserveur ;
