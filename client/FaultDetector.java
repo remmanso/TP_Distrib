@@ -8,7 +8,7 @@ import java.util.Timer;
 public class FaultDetector {
 
 	public static void main(String[] args) {
-		if (args.length < 2) {
+		if (args.length < 1) {
 			System.out.println("veuillez insérer un argument 4 adresses");
 			return;
 		}
@@ -18,10 +18,7 @@ public class FaultDetector {
 		context.put(args[0], true);
 		
 		TimerPing t_ping;
-		if (args[1].equals("1"))
-			t_ping = new TimerPing(args[0], 2008, context);
-		else 
-			t_ping = new TimerPing(args[0], 2009, context);
+		t_ping = new TimerPing(args[0], 2009, context);
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(t_ping, 10000, 1000);
 		/*t_ping = new TimerPing(args[1], 2009);
@@ -35,10 +32,7 @@ public class FaultDetector {
 		Socket socketduserveur ;
 				
 		try {
-			if (args[1].equals("1"))
-				socketserver = new ServerSocket(2009);
-			else 
-				socketserver = new ServerSocket(2008);
+			socketserver = new ServerSocket(2009);
 			System.out.println("Le serveur est à l'écoute du port "+socketserver.getLocalPort());
 			while (true){
 		    	socketduserveur = socketserver.accept(); 
