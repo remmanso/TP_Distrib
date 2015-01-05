@@ -37,7 +37,6 @@ public class TimerPing extends TimerTask
 			out = socket.getOutputStream();
 			in = socket.getInputStream();
 			out.write(b);
-			System.out.println("envoie de bn_octet : " + b.length + "chaine : " + s);
 			b_read = in.read(b);
 			
 
