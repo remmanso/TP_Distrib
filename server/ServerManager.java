@@ -23,12 +23,18 @@ public class ServerManager implements Runnable {
 			while (true) {
 				int b_read = in.read(down_packet);
 				String s = new String(down_packet);
+				//cas reception d'un ping
 				if (s.contains("ping")) {
 					byte data_out[]=s.getBytes();
 					out.write(data_out);
 					out.flush();
 				}
-				
+				//cas de reception d'un ackitement
+				if (s.contains("ACK")) {
+					//TO DO
+				}
+				//cas de reception d'un message
+				//TO DO
 			}
 		} catch (SocketException e) {
 			try {

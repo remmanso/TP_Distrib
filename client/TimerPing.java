@@ -14,6 +14,7 @@ public class TimerPing extends TimerTask
 	private String addresse;
 	private int port;
 	private HashMap<String, Boolean> context;
+	private Socket socket;
 
 	public TimerPing(String ad, int port) {
 		addresse = ad;
@@ -29,7 +30,7 @@ public class TimerPing extends TimerTask
 	public void run(){
 
 		try {
-			Socket socket;
+			
 			InputStream in;
 			OutputStream out;
 			long time;
@@ -62,25 +63,51 @@ public class TimerPing extends TimerTask
 		}catch (UnknownHostException e) {
 			
 			e.printStackTrace();
+			try {
+				socket.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}catch (ConnectException e) {
 			
 			System.out.println("Connection perdue");
 			context.put(addresse, false);
 			System.out.println(context.toString());
+			try {
+				socket.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}catch (SocketTimeoutException e) {
 
 			System.out.println("Request ping time out");
 			System.out.println("Connection perdue");
 			context.put(addresse, false);
 			System.out.println(context.toString());
+			try {
+				socket.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}catch (SocketException e) {
 
 			System.out.println("Connection perdue");
 			context.put(addresse, false);
 			System.out.println(context.toString());
+			try {
+				socket.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}catch (IOException e) {
 			
 			e.printStackTrace();
+			try {
+				socket.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		} 
 	}
 }
