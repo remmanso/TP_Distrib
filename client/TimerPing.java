@@ -50,7 +50,6 @@ public class TimerPing extends TimerTask
 			out.write(b);
 			System.out.println("envoie de nb octet : " + b.length);
 			b_read = in.read(b);
-			
 
 			time = System.nanoTime() - time;
 			double time_ms = (double) time / 1000000.0;
