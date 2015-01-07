@@ -58,7 +58,7 @@ public class Broadcast implements Runnable{
                 e.printStackTrace();
         }catch (SocketException e) {
 
-                e.printStackTrace();
+                //e.printStackTrace();
         }catch (IOException e) {
 
                 e.printStackTrace();

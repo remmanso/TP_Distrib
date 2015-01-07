@@ -1,6 +1,7 @@
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,7 +24,10 @@ public class Listener implements Runnable{
     public void run() {
         try {
             ServerSocket socketserver = new ServerSocket(port);
-            socketserver.accept();
+            
+            Socket socketduserveur = socketserver.accept();
+            Thread t = new Thread(new ServerManager(socketduserveur));
+            t.start();
         } catch (IOException ex) {
             Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);
         }

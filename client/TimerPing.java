@@ -39,74 +39,44 @@ public class TimerPing extends TimerTask
 			String s = new String(b);
 			s = "ping".concat(s);
 			b = s.getBytes();
-
+                        
 			socket = new Socket(this.addresse, port);  
 			socket.setSoTimeout(1000); 
 
-			System.out.println("Ping process...");
+			//System.out.println("Ping process...");
 
 			time = System.nanoTime();
 			out = socket.getOutputStream();
 			in = socket.getInputStream();
 			out.write(b);
-			System.out.println("envoie de nb octet : " + b.length);
+			//System.out.println("envoie de nb octet : " + b.length);
 			b_read = in.read(b);
 
 			time = System.nanoTime() - time;
 			double time_ms = (double) time / 1000000.0;
-			System.out.println("nb octet re��u : " + b_read + " en " + time_ms + "ms ");
+			//System.out.println("nb octet re��u : " + b_read + " en " + time_ms + "ms ");
 			
 			socket.close();
-
-
+                        
 		}catch (UnknownHostException e) {
-			
 			e.printStackTrace();
-			try {
-				socket.close();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 		}catch (ConnectException e) {
-			
-			System.out.println("Connection perdue");
-			context.put(addresse, false);
-			System.out.println(context.toString());
-			try {
-				socket.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		}catch (SocketTimeoutException e) {
-
-			System.out.println("Request ping time out");
-			System.out.println("Connection perdue");
-			context.put(addresse, false);
-			System.out.println(context.toString());
-			try {
-				socket.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+//			System.out.println("Connection perdue");
+//			context.put(addresse, false);
+//			System.out.println(context.toString());
+		}catch (SocketTimeoutException e){
+//			System.out.println("Request ping time out");
+//			System.out.println("Connection perdue");
+//			context.put(addresse, false);
+//			System.out.println(context.toString());	
 		}catch (SocketException e) {
 
-			System.out.println("Connection perdue");
-			context.put(addresse, false);
-			System.out.println(context.toString());
-			try {
-				socket.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+//			System.out.println("Connection perdue");
+//			context.put(addresse, false);
+//			System.out.println(context.toString());
 		}catch (IOException e) {
 			
 			e.printStackTrace();
-			try {
-				socket.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
 		} 
 	}
 }
