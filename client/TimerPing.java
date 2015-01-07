@@ -74,7 +74,6 @@ public class TimerPing extends TimerTask
 			System.out.println(context.toString());
 		}catch (SocketException e) {
 
-			System.out.println("Request ping time out");
 			System.out.println("Connection perdue");
 			context.put(addresse, false);
 			System.out.println(context.toString());
