@@ -34,7 +34,7 @@ public class ServerManager implements Runnable {
 					//TO DO
 				}
 				//cas de reception d'un message
-				//TO DO
+				String m = new String(b_read + " origine: " + socketClient.getInetAddress().toString());
 			}
 		} catch (SocketException e) {
 			try {
