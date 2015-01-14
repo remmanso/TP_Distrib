@@ -45,6 +45,7 @@ public class Listener implements Runnable{
             Socket socketduserveur = socketserver.accept();
             Thread t = new Thread(new ServerManager(socketduserveur, c_messages_sent, c_messages_received));
             t.start();
+            //socketserver.close();
         } catch (IOException ex) {
             Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);
         }

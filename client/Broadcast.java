@@ -48,6 +48,7 @@ public class Broadcast implements Runnable{
                     in = socket.getInputStream();
                     out.write(b);
                     //System.out.println(message);
+                    socket.close();
                 }
                 
         }catch (UnknownHostException e) {
