@@ -73,18 +73,19 @@ public class ServerManager implements Runnable {
 				else {
 					String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
 					String Ip_origine = socketClient.getInetAddress().toString();
-					String msg;
+					String msg = s.replace("/"+id_msg+"/", "");
 					HashMap<String, Boolean> context_message = new HashMap<String, Boolean>();
 					for (String ip : context.keySet())
 						context_message.put(s, false);
 					c_messages_received.put(id_msg, context_message);
 					messages_received.put(id_msg, msg);
-					
-					
+					Thread b = new Thread(new Broadcast("/"+id_msg + "/"+ "ACK", context));
+			        b.start();
 				}
 				//cas de reception d'un message
 				String m = new String(b_read + " origine: " + socketClient.getInetAddress().toString());
-                //String hash = m.substring(m.indexOf("/")+1, m.indexOf("/", m.indexOf("/")+1));
+                                //String hash = m.substring(m.indexOf("/")+1, m.indexOf("/", m.indexOf("/")+1));
+                                //String message_sans_hascode = m.replace("/"+hash+"/", "");
 			}
 		} catch (SocketException e) {
 			try {
