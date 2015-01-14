@@ -21,10 +21,17 @@ public class BroadcastProtocol {
 		HashMap<String, HashMap<String, Boolean>> c_messages_received = 
 				new HashMap<String, HashMap<String,Boolean>>();
 		
+		HashMap<String, String> messages_received = 
+				new HashMap<String, String>();
+		
+		HashMap<String, String> messages_sent = 
+				new HashMap<String, String>();
+		
 		Thread t = new Thread(new FaultDetector(args, context, 2009));
 		t.start();
 		
-		Thread c2010 = new Thread(new Listener(2010, c_messages_sent, c_messages_received));
+		Thread c2010 = new Thread(new Listener(2010, c_messages_sent, c_messages_received,
+				messages_received, messages_sent, context));
         c2010.start();
         
         String message = "hello";
@@ -36,7 +43,7 @@ public class BroadcastProtocol {
 			//on regarde quelle machine a acquité les messages envoyé par cette machine
 			for (String s : c_messages_sent.keySet()) {
 				boolean ok_delivery = true;
-				//pour chaque message on parcourt les machines en réseau pour savoir lesquels on répondu
+				//pour chaque message on parcourt les machines en réseau pour savoir lesquelles ont répondu
 				//si elles 'nont pas répondu on regarde si elles sont en vies.
 				for (String s1 : c_messages_sent.get(s).keySet()) {
 					if (!c_messages_sent.get(s).get(s1)) {
@@ -52,14 +59,15 @@ public class BroadcastProtocol {
 			} 
 			for (String s :messages_to_deliver) {
 				c_messages_sent.remove(s);
-				deliver(s);
+				deliver(messages_sent.get(s));
+				messages_sent.remove(s);
 			}
 			
 			messages_to_deliver.clear();
 			//on regarde quelle machine a acquité les messages reçus par cette machine
 			for (String s : c_messages_received.keySet()) {
 				boolean ok_delivery = true;
-				//pour chaque message on parcourt les machines en réseau pour savoir lesquels on répondu
+				//pour chaque message on parcourt les machines en réseau pour savoir lesquelles ont répondu
 				//si elles 'nont pas répondu on regarde si elles sont en vies.
 				for (String s1 : c_messages_received.get(s).keySet()) {
 					if (!c_messages_received.get(s).get(s1)) {
@@ -75,7 +83,8 @@ public class BroadcastProtocol {
 			} 
 			for (String s :messages_to_deliver) {
 				c_messages_received.remove(s);
-				deliver(s);
+				deliver(messages_received.get(s));
+				messages_received.remove(s);
 			}
 		}
 
