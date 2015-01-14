@@ -31,18 +31,21 @@ public class Broadcast implements Runnable{
                 InputStream in;
                 OutputStream out;               
                 System.out.println("Broadcast in process...");
-                
+
                 for(String s : list_adr.keySet()){
                     if("LocalHost".equals(s) || !list_adr.get(s))
                         continue;
                     
                     Socket socket = new Socket(s, 2010);
                     
+                    if(!message.contains("ACK")){
+                        String m = message + socket.getInetAddress().toString();
+                        message = "/" + m.hashCode() + "/" + message;
+                    }
+                    
+                    byte b[] = message.getBytes();
                     out = socket.getOutputStream();
                     in = socket.getInputStream();
-                    String m = message + socket.getInetAddress().toString();
-                    message = "/" + m.hashCode() + "/" + message;
-                    byte b[] = message.getBytes();
                     out.write(b);
                     //System.out.println(message);
                 }
