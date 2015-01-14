@@ -41,11 +41,10 @@ public class Broadcast implements Runnable{
                     out = socket.getOutputStream();
                     in = socket.getInputStream();
                     String m = message + socket.getInetAddress().toString();
-                    message = message + "/" + m.hashCode() + "/";
+                    message = "/" + m.hashCode() + "/" + message;
                     byte b[] = message.getBytes();
-                    
                     out.write(b);
-                    System.out.println(message);
+                    //System.out.println(message);
                 }
                 
         }catch (UnknownHostException e) {

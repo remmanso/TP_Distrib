@@ -63,6 +63,7 @@ public class ServerManager implements Runnable {
 				}
 				//cas de reception d'un message
 				String m = new String(b_read + " origine: " + socketClient.getInetAddress().toString());
+                                //String hash = m.substring(m.indexOf("/")+1, m.indexOf("/", m.indexOf("/")+1));
 			}
 		} catch (SocketException e) {
 			try {
