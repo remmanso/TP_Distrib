@@ -14,6 +14,13 @@ public class ServerManager implements Runnable {
 	private HashMap<String, HashMap<String, Boolean>> c_messages_received = 
 			new HashMap<String, HashMap<String,Boolean>>();
 	
+	private HashMap<String, String> messages_received = 
+			new HashMap<String, String>();
+	
+	private HashMap<String, String> messages_sent = 
+			new HashMap<String, String>();
+	private HashMap<String, Boolean> context;
+	
 	public ServerManager(Socket s) {
 		socketClient = s;
 	}
@@ -22,13 +29,18 @@ public class ServerManager implements Runnable {
 	
 	public ServerManager(Socket socketClient,
 			HashMap<String, HashMap<String, Boolean>> c_messages_sent,
-			HashMap<String, HashMap<String, Boolean>> c_messages_received) {
+			HashMap<String, HashMap<String, Boolean>> c_messages_received,
+			HashMap<String, String> messages_received,
+			HashMap<String, String> messages_sent,
+			HashMap<String, Boolean> context) {
 		super();
 		this.socketClient = socketClient;
 		this.c_messages_sent = c_messages_sent;
 		this.c_messages_received = c_messages_received;
+		this.messages_received = messages_received;
+		this.messages_sent = messages_sent;
+		this.context = context;
 	}
-
 
 
 	@Override
@@ -49,8 +61,8 @@ public class ServerManager implements Runnable {
 				}
 				//cas de reception d'un acquitement
 				else if (s.contains("ACK")) {
-					String id_msg = new String();
-					String Ip_origine = new String(socketClient.getInetAddress().toString());
+					String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
+					String Ip_origine = socketClient.getInetAddress().toString();
 					if (c_messages_received.containsKey(Ip_origine + id_msg)) {
 						c_messages_received.get(Ip_origine + id_msg).put(Ip_origine, true);
 					}
@@ -59,11 +71,20 @@ public class ServerManager implements Runnable {
 					}
 				} 
 				else {
+					String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
+					String Ip_origine = socketClient.getInetAddress().toString();
+					String msg;
+					HashMap<String, Boolean> context_message = new HashMap<String, Boolean>();
+					for (String ip : context.keySet())
+						context_message.put(s, false);
+					c_messages_received.put(id_msg, context_message);
+					messages_received.put(id_msg, msg);
+					
 					
 				}
 				//cas de reception d'un message
 				String m = new String(b_read + " origine: " + socketClient.getInetAddress().toString());
-                                //String hash = m.substring(m.indexOf("/")+1, m.indexOf("/", m.indexOf("/")+1));
+                //String hash = m.substring(m.indexOf("/")+1, m.indexOf("/", m.indexOf("/")+1));
 			}
 		} catch (SocketException e) {
 			try {

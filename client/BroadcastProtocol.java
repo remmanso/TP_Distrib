@@ -21,10 +21,17 @@ public class BroadcastProtocol {
 		HashMap<String, HashMap<String, Boolean>> c_messages_received = 
 				new HashMap<String, HashMap<String,Boolean>>();
 		
+		HashMap<String, String> messages_received = 
+				new HashMap<String, String>();
+		
+		HashMap<String, String> messages_sent = 
+				new HashMap<String, String>();
+		
 		Thread t = new Thread(new FaultDetector(args, context, 2009));
 		t.start();
 		
-		Thread c2010 = new Thread(new Listener(2010, c_messages_sent, c_messages_received));
+		Thread c2010 = new Thread(new Listener(2010, c_messages_sent, c_messages_received,
+				messages_received, messages_sent, context));
         c2010.start();
         
         String message = "hello";
