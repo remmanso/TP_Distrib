@@ -48,7 +48,6 @@ public class ServerManager implements Runnable {
 		try {
 			DataOutputStream out = new DataOutputStream(socketClient.getOutputStream());
 			DataInputStream in = new DataInputStream(socketClient.getInputStream());;
-			byte ack_packet[] = new byte[1];
 			byte down_packet[] = new byte[65000];
 			while (true) {
 				int b_read = in.read(down_packet);
@@ -72,11 +71,10 @@ public class ServerManager implements Runnable {
 				} 
 				else {
 					String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
-					String Ip_origine = socketClient.getInetAddress().toString();
 					String msg = s.replace("/"+id_msg+"/", "");
 					HashMap<String, Boolean> context_message = new HashMap<String, Boolean>();
 					for (String ip : context.keySet())
-						context_message.put(s, false);
+						context_message.put(ip, false);
 					c_messages_received.put(id_msg, context_message);
 					messages_received.put(id_msg, msg);
 					Thread b = new Thread(new Broadcast("/"+id_msg + "/"+ "ACK", context));
