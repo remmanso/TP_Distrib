@@ -1,13 +1,13 @@
-import java.util.HashMap;
-import java.util.TimerTask;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.net.SocketException;
+import java.util.HashMap;
+import java.util.TimerTask;
 
 public class TimerPing extends TimerTask 
 {

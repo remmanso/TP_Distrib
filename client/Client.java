@@ -1,5 +1,4 @@
-import java.*;
-import java.util.Timer; 
+import java.util.Timer;
 
 public class Client {
 	
