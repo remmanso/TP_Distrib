@@ -33,22 +33,56 @@ public class BroadcastProtocol {
 		
 		while (true) {
 			LinkedList<String> messages_to_deliver = new LinkedList<String>();
-			int nb_machine_alive = 0;
-			for (String s : context.keySet()) {
-				if (context.get(s))
-					nb_machine_alive ++;
-			}
+			//on regarde quelle machine a acquité les messages envoyé par cette machine
 			for (String s : c_messages_sent.keySet()) {
-				int nb_machine_response = 0;
+				boolean ok_delivery = true;
+				//pour chaque message on parcourt les machines en réseau pour savoir lesquels on répondu
+				//si elles 'nont pas répondu on regarde si elles sont en vies.
 				for (String s1 : c_messages_sent.get(s).keySet()) {
-					if (c_messages_sent.get(s).get(s1))
-						nb_machine_response ++;
+					if (!c_messages_sent.get(s).get(s1)) {
+						if (context.get(s1)) {
+							ok_delivery = false;
+							break;
+						}
+					}
+						
 				}
-				if (nb_machine_response == nb_machine_alive)
+				if (ok_delivery)
 					messages_to_deliver.add(s);
+			} 
+			for (String s :messages_to_deliver) {
+				c_messages_sent.remove(s);
+				deliver(s);
+			}
+			
+			messages_to_deliver.clear();
+			//on regarde quelle machine a acquité les messages reçus par cette machine
+			for (String s : c_messages_received.keySet()) {
+				boolean ok_delivery = true;
+				//pour chaque message on parcourt les machines en réseau pour savoir lesquels on répondu
+				//si elles 'nont pas répondu on regarde si elles sont en vies.
+				for (String s1 : c_messages_received.get(s).keySet()) {
+					if (!c_messages_received.get(s).get(s1)) {
+						if (context.get(s1)) {
+							ok_delivery = false;
+							break;
+						}
+					}
+						
+				}
+				if (ok_delivery)
+					messages_to_deliver.add(s);
+			} 
+			for (String s :messages_to_deliver) {
+				c_messages_received.remove(s);
+				deliver(s);
 			}
 		}
 
+	}
+	
+	public static void deliver(String s) {
+		
 	}
 
 }
