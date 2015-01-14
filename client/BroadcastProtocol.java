@@ -24,7 +24,7 @@ public class BroadcastProtocol {
 		Thread t = new Thread(new FaultDetector(args, context, 2009));
 		t.start();
 		
-		Thread c2010 = new Thread(new Listener(2010));
+		Thread c2010 = new Thread(new Listener(2010, c_messages_sent, c_messages_received));
         c2010.start();
         
         String message = "hello";
