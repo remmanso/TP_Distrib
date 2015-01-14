@@ -62,17 +62,20 @@ public class TimerPing extends TimerTask
 			e.printStackTrace();
 		}catch (ConnectException e) {
 //			System.out.println("Connection perdue");
-//			context.put(addresse, false);
+			context.put(addresse, false);
+//                      context.remove(addresse);
 //			System.out.println(context.toString());
 		}catch (SocketTimeoutException e){
 //			System.out.println("Request ping time out");
 //			System.out.println("Connection perdue");
-//			context.put(addresse, false);
+			context.put(addresse, false);
+//                      context.remove(addresse);
 //			System.out.println(context.toString());	
 		}catch (SocketException e) {
 
 //			System.out.println("Connection perdue");
-//			context.put(addresse, false);
+			context.put(addresse, false);
+//                      context.remove(addresse);
 //			System.out.println(context.toString());
 		}catch (IOException e) {
 			
