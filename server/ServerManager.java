@@ -48,8 +48,18 @@ public class ServerManager implements Runnable {
 					out.flush();
 				}
 				//cas de reception d'un acquitement
-				if (s.contains("ACK")) {
-					//TO DO
+				else if (s.contains("ACK")) {
+					String id_msg = new String();
+					String Ip_origine = new String(socketClient.getInetAddress().toString());
+					if (c_messages_received.containsKey(Ip_origine + id_msg)) {
+						c_messages_received.get(Ip_origine + id_msg).put(Ip_origine, true);
+					}
+					if (c_messages_sent.containsKey(Ip_origine + id_msg)) {
+						c_messages_sent.get(Ip_origine + id_msg).put(Ip_origine, true);
+					}
+				} 
+				else {
+					
 				}
 				//cas de reception d'un message
 				String m = new String(b_read + " origine: " + socketClient.getInetAddress().toString());
