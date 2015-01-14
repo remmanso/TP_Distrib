@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -18,9 +19,23 @@ import java.util.HashMap;
  */
 public class Broadcast implements Runnable{
     private String message;
-    HashMap<String, Boolean> list_adr;
+    private ConcurrentHashMap<String, Boolean> list_adr;
+    private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent = 
+			new ConcurrentHashMap<String, ConcurrentHashMap<String,Boolean>>();
+    private ConcurrentHashMap<String, String> messages_sent = 
+			new ConcurrentHashMap<String, String>();
     
-    public Broadcast(String message, HashMap<String, Boolean> list_adr){
+    public Broadcast(String message, ConcurrentHashMap<String, Boolean> list_adr,
+			ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent,
+			ConcurrentHashMap<String, String> messages_sent) {
+		super();
+		this.message = message;
+		this.list_adr = list_adr;
+		this.c_messages_sent = c_messages_sent;
+		this.messages_sent = messages_sent;
+	}
+
+	public Broadcast(String message, ConcurrentHashMap<String, Boolean> list_adr){
         this.message = message;
         this.list_adr = list_adr;
     }
@@ -41,6 +56,12 @@ public class Broadcast implements Runnable{
                     if(!message.contains("ACK")){
                         String m = message + socket.getInetAddress().toString();
                         message = "/" + m.hashCode() + "/" + message;
+                        String id_msg = message.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
+                        ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
+    					for (String ip : list_adr.keySet())
+    						context_message.put(ip, false);
+    					c_messages_sent.put(id_msg, context_message);
+    					messages_sent.put(id_msg, m);
                     }
                     
                     byte b[] = message.getBytes();

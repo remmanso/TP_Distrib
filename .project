@@ -14,4 +14,21 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>client/Broadcast.java</name>
+			<type>1</type>
+			<location>/Users/samuelgallet/Documents/SLE.3A/Système_distribué/TP_Distrib/client/Broadcast.java</location>
+		</link>
+		<link>
+			<name>client/BroadcastProtocol.java</name>
+			<type>1</type>
+			<location>/Users/samuelgallet/Documents/SLE.3A/Système_distribué/TP_Distrib/client/BroadcastProtocol.java</location>
+		</link>
+		<link>
+			<name>client/Listener.java</name>
+			<type>1</type>
+			<location>/Users/samuelgallet/Documents/SLE.3A/Système_distribué/TP_Distrib/client/Listener.java</location>
+		</link>
+	</linkedResources>
 </projectDescription>

@@ -4,6 +4,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,18 +17,18 @@ import java.util.logging.Logger;
  */
 public class Listener implements Runnable{
     private int port;
-    private HashMap<String, HashMap<String, Boolean>> c_messages_sent = 
-			new HashMap<String, HashMap<String,Boolean>>();
-	private HashMap<String, HashMap<String, Boolean>> c_messages_received = 
-			new HashMap<String, HashMap<String,Boolean>>();
+    private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent = 
+			new ConcurrentHashMap<String, ConcurrentHashMap<String,Boolean>>();
+	private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received = 
+			new ConcurrentHashMap<String, ConcurrentHashMap<String,Boolean>>();
 	
-	private HashMap<String, String> messages_received = 
-			new HashMap<String, String>();
+	private ConcurrentHashMap<String, String> messages_received = 
+			new ConcurrentHashMap<String, String>();
 	
-	private HashMap<String, String> messages_sent = 
-			new HashMap<String, String>();
+	private ConcurrentHashMap<String, String> messages_sent = 
+			new ConcurrentHashMap<String, String>();
 	
-	private HashMap<String, Boolean> context;
+	private ConcurrentHashMap<String, Boolean> context;
     
     public Listener(int port){
         this.port = port;
@@ -39,11 +40,11 @@ public class Listener implements Runnable{
 
 
 	public Listener(int port,
-			HashMap<String, HashMap<String, Boolean>> c_messages_sent,
-			HashMap<String, HashMap<String, Boolean>> c_messages_received,
-			HashMap<String, String> messages_received,
-			HashMap<String, String> messages_sent,
-			HashMap<String, Boolean> context) {
+			ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent,
+			ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received,
+			ConcurrentHashMap<String, String> messages_received,
+			ConcurrentHashMap<String, String> messages_sent,
+			ConcurrentHashMap<String, Boolean> context) {
 		super();
 		this.port = port;
 		this.c_messages_sent = c_messages_sent;

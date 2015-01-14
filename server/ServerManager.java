@@ -4,22 +4,23 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class ServerManager implements Runnable {
 
 	private Socket socketClient;
-	private HashMap<String, HashMap<String, Boolean>> c_messages_sent = 
-			new HashMap<String, HashMap<String,Boolean>>();
-	private HashMap<String, HashMap<String, Boolean>> c_messages_received = 
-			new HashMap<String, HashMap<String,Boolean>>();
+	private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent = 
+			new ConcurrentHashMap<String, ConcurrentHashMap<String,Boolean>>();
+	private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received = 
+			new ConcurrentHashMap<String, ConcurrentHashMap<String,Boolean>>();
 	
-	private HashMap<String, String> messages_received = 
-			new HashMap<String, String>();
+	private ConcurrentHashMap<String, String> messages_received = 
+			new ConcurrentHashMap<String, String>();
 	
-	private HashMap<String, String> messages_sent = 
-			new HashMap<String, String>();
-	private HashMap<String, Boolean> context;
+	private ConcurrentHashMap<String, String> messages_sent = 
+			new ConcurrentHashMap<String, String>();
+	private ConcurrentHashMap<String, Boolean> context;
 	
 	public ServerManager(Socket s) {
 		socketClient = s;
@@ -28,11 +29,11 @@ public class ServerManager implements Runnable {
 	
 	
 	public ServerManager(Socket socketClient,
-			HashMap<String, HashMap<String, Boolean>> c_messages_sent,
-			HashMap<String, HashMap<String, Boolean>> c_messages_received,
-			HashMap<String, String> messages_received,
-			HashMap<String, String> messages_sent,
-			HashMap<String, Boolean> context) {
+			ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent,
+			ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received,
+			ConcurrentHashMap<String, String> messages_received,
+			ConcurrentHashMap<String, String> messages_sent,
+			ConcurrentHashMap<String, Boolean> context) {
 		super();
 		this.socketClient = socketClient;
 		this.c_messages_sent = c_messages_sent;
@@ -72,7 +73,7 @@ public class ServerManager implements Runnable {
 				else {
 					String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
 					String msg = s.replace("/"+id_msg+"/", "");
-					HashMap<String, Boolean> context_message = new HashMap<String, Boolean>();
+					ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
 					for (String ip : context.keySet())
 						context_message.put(ip, false);
 					c_messages_received.put(id_msg, context_message);

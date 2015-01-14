@@ -2,16 +2,17 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Timer;
 
 
 public class FaultDetector implements Runnable {
 	
 	private String args[];
-	private HashMap<String, Boolean> context;
+	private ConcurrentHashMap<String, Boolean> context;
 	private int port;
 	
-	public FaultDetector(String args[], HashMap<String, Boolean> context, int port) {
+	public FaultDetector(String args[], ConcurrentHashMap<String, Boolean> context, int port) {
 		this.args = args;
 		this.context = context;
 		this.port = port;

@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class BroadcastProtocol {
@@ -12,20 +13,20 @@ public class BroadcastProtocol {
 			return;
 		}
 		
-		HashMap<String, Boolean> context = new HashMap<String, Boolean>();
+		ConcurrentHashMap<String, Boolean> context = new ConcurrentHashMap<String, Boolean>();
 		for (int i = 0; i < args.length; i++)
 			context.put(args[i], true);
 		
-		HashMap<String, HashMap<String, Boolean>> c_messages_sent = 
-				new HashMap<String, HashMap<String,Boolean>>();
-		HashMap<String, HashMap<String, Boolean>> c_messages_received = 
-				new HashMap<String, HashMap<String,Boolean>>();
+		ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent = 
+				new ConcurrentHashMap<String, ConcurrentHashMap<String,Boolean>>();
+		ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received = 
+				new ConcurrentHashMap<String, ConcurrentHashMap<String,Boolean>>();
 		
-		HashMap<String, String> messages_received = 
-				new HashMap<String, String>();
+		ConcurrentHashMap<String, String> messages_received = 
+				new ConcurrentHashMap<String, String>();
 		
-		HashMap<String, String> messages_sent = 
-				new HashMap<String, String>();
+		ConcurrentHashMap<String, String> messages_sent = 
+				new ConcurrentHashMap<String, String>();
 		
 		Thread t = new Thread(new FaultDetector(args, context, 2009));
 		t.start();
@@ -35,16 +36,16 @@ public class BroadcastProtocol {
         c2010.start();
         
         String message = "hello";
-        Thread b = new Thread(new Broadcast(message, context));
+        Thread b = new Thread(new Broadcast(message, context, c_messages_sent, messages_sent));
         b.start();
 		
 		while (true) {
 			LinkedList<String> messages_to_deliver = new LinkedList<String>();
-			//on regarde quelle machine a acquité les messages envoyé par cette machine
+			//on regarde quelle machine a acquit�� les messages envoy�� par cette machine
 			for (String s : c_messages_sent.keySet()) {
 				boolean ok_delivery = true;
-				//pour chaque message on parcourt les machines en réseau pour savoir lesquelles ont répondu
-				//si elles 'nont pas répondu on regarde si elles sont en vies.
+				//pour chaque message on parcourt les machines en r��seau pour savoir lesquelles ont r��pondu
+				//si elles 'nont pas r��pondu on regarde si elles sont en vies.
 				for (String s1 : c_messages_sent.get(s).keySet()) {
 					if (!c_messages_sent.get(s).get(s1)) {
 						if (context.get(s1)) {
@@ -64,11 +65,11 @@ public class BroadcastProtocol {
 			}
 			
 			messages_to_deliver.clear();
-			//on regarde quelle machine a acquité les messages reçus par cette machine
+			//on regarde quelle machine a acquit�� les messages re��us par cette machine
 			for (String s : c_messages_received.keySet()) {
 				boolean ok_delivery = true;
-				//pour chaque message on parcourt les machines en réseau pour savoir lesquelles ont répondu
-				//si elles 'nont pas répondu on regarde si elles sont en vies.
+				//pour chaque message on parcourt les machines en r��seau pour savoir lesquelles ont r��pondu
+				//si elles 'nont pas r��pondu on regarde si elles sont en vies.
 				for (String s1 : c_messages_received.get(s).keySet()) {
 					if (!c_messages_received.get(s).get(s1)) {
 						if (context.get(s1)) {

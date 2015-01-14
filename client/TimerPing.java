@@ -7,13 +7,14 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.TimerTask;
 
 public class TimerPing extends TimerTask 
 {
 	private String addresse;
 	private int port;
-	private HashMap<String, Boolean> context;
+	private ConcurrentHashMap<String, Boolean> context;
 	private Socket socket;
 
 	public TimerPing(String ad, int port) {
@@ -21,7 +22,7 @@ public class TimerPing extends TimerTask
 		this.port = port;
 	}
 
-	public TimerPing(String ad, int port, HashMap<String, Boolean> context) {
+	public TimerPing(String ad, int port, ConcurrentHashMap<String, Boolean> context) {
 		addresse = ad;
 		this.port = port;
 		this.context = context;
