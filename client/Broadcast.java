@@ -29,9 +29,7 @@ public class Broadcast implements Runnable{
     public void run(){
         try{
                 InputStream in;
-                OutputStream out;
-                int b_read = 0;
-               
+                OutputStream out;               
                 System.out.println("Broadcast in process...");
                 
                 for(String s : list_adr.keySet()){
@@ -45,6 +43,7 @@ public class Broadcast implements Runnable{
                     String m = message + socket.getInetAddress().toString();
                     message = message + "/" + m.hashCode() + "/";
                     byte b[] = message.getBytes();
+                    
                     out.write(b);
                     System.out.println(message);
                 }
