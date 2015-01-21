@@ -46,7 +46,6 @@ public class Broadcast implements Runnable{
                 InputStream in;
                 OutputStream out;               
                 System.out.println("Broadcast in process...");
-
                 for(String s : list_adr.keySet()){
                     if("LocalHost".equals(s) || !list_adr.get(s))
                         continue;
@@ -56,7 +55,7 @@ public class Broadcast implements Runnable{
                     if(!message.contains("ACK") && !message.isEmpty()){
                         String m = message + socket.getInetAddress().toString();
                         message = "/" + m.hashCode() + "/" + message;
-                        String id_msg = message.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
+                        String id_msg = message.substring(m.indexOf("/")+1, m.indexOf("/", m.indexOf("/")+1));
                         ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
     					for (String ip : list_adr.keySet())
     						context_message.put(ip, false);

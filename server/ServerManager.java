@@ -54,6 +54,7 @@ public class ServerManager implements Runnable {
 			while (true) {
 				int b_read = in.read(down_packet);
 				String s = new String(down_packet);
+				System.out.println("Debug : " + s);
 				//cas reception d'un ping
 				if (s.contains("ping")) {
                                     byte data_out[]=s.getBytes();
@@ -71,16 +72,17 @@ public class ServerManager implements Runnable {
                                         c_messages_sent.get(Ip_origine + id_msg).put(Ip_origine, true);
                                     }
 				} 
-				else if (!s.isEmpty()){
-                                    String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
-                                    String msg = s.replace("/"+id_msg+"/", "");
-                                    ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
-                                    for (String ip : context.keySet())
-                                        context_message.put(ip, false);
-                                    c_messages_received.put(id_msg, context_message);
-                                    messages_received.put(id_msg, msg);
-                                    Thread b = new Thread(new Broadcast("/"+id_msg + "/"+ "ACK", context));
-                                    b.start();
+				//cas reception d'un message
+				else {
+					String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
+					String msg = s.replace("/"+id_msg+"/", "");
+					ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
+					for (String ip : context.keySet())
+						context_message.put(ip, false);
+					c_messages_received.put(id_msg, context_message);
+					messages_received.put(id_msg, msg);
+					Thread b = new Thread(new Broadcast("/"+id_msg + "/"+ "ACK", context));
+			        b.start();
 				}
 				//cas de reception d'un message
 				String m = new String(b_read + " origine: " + socketClient.getInetAddress().toString());
