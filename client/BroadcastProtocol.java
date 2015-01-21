@@ -31,7 +31,7 @@ public class BroadcastProtocol {
                             new ConcurrentHashMap<String, String>();
 
             Thread t = new Thread(new FaultDetector(args, context, 2009));
-            t.start();
+            //t.start();
 
             Thread c2010 = new Thread(new Listener(2010, c_messages_sent, c_messages_received,
                             messages_received, messages_sent, context));
@@ -39,9 +39,17 @@ public class BroadcastProtocol {
 
             String message = "hello " + InetAddress.getLocalHost();
             Thread b = new Thread(new Broadcast(message, context, c_messages_sent, messages_sent));
+            try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             b.start();
 
             while (true) {
+            	//System.out.println(c_messages_received.toString());
+            	//System.out.println(c_messages_sent.toString());
 //                LinkedList<String> messages_to_deliver = new LinkedList<String>();
 //                //on regarde quelle machine a acquite les messages envoye par cette machine
 //                for (String s : c_messages_sent.keySet()) {
