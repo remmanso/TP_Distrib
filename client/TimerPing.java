@@ -73,7 +73,6 @@ public class TimerPing extends TimerTask
 //                      context.remove(addresse);
 //			System.out.println(context.toString());	
 		}catch (SocketException e) {
-
 //			System.out.println("Connection perdue");
 			context.put(addresse, false);
 //                      context.remove(addresse);

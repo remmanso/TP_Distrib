@@ -53,6 +53,7 @@ public class ServerManager implements Runnable {
 			while (true) {
 				int b_read = in.read(down_packet);
 				String s = new String(down_packet);
+				System.out.println("Debug : " + s);
 				//cas reception d'un ping
 				if (s.contains("ping")) {
 					byte data_out[]=s.getBytes();
@@ -70,6 +71,7 @@ public class ServerManager implements Runnable {
 						c_messages_sent.get(Ip_origine + id_msg).put(Ip_origine, true);
 					}
 				} 
+				//cas reception d'un message
 				else {
 					String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
 					String msg = s.replace("/"+id_msg+"/", "");
