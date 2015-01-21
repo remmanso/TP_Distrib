@@ -55,8 +55,6 @@ public class ServerManager implements Runnable {
 				byte down_packet[] = new byte[65000];
 				int b_read = in.read(down_packet);
 				String s = new String(down_packet);
-				if (b_read != -1)
-					System.out.println("Debug : " + s);
 				//cas reception d'un ping
                                 if (b_read != -1)
                                     System.out.println("debug : " + s);
