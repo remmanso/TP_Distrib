@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class BroadcastProtocol {
@@ -31,8 +33,13 @@ public class BroadcastProtocol {
                             new ConcurrentHashMap<String, String>();
 
             Thread t = new Thread(new FaultDetector(args, context, 2009));
+            try {
+                //t.start();
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(BroadcastProtocol.class.getName()).log(Level.SEVERE, null, ex);
+            }
             t.start();
-
             Thread c2010 = new Thread(new Listener(2010, c_messages_sent, c_messages_received,
                             messages_received, messages_sent, context));
             c2010.start();
