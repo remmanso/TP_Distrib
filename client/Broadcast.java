@@ -53,7 +53,7 @@ public class Broadcast implements Runnable{
                     
                     Socket socket = new Socket(s, 2010);
                     
-                    if(!message.contains("ACK")){
+                    if(!message.contains("ACK") && !message.isEmpty()){
                         String m = message + socket.getInetAddress().toString();
                         message = "/" + m.hashCode() + "/" + message;
                         String id_msg = message.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));

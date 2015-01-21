@@ -26,7 +26,8 @@ public class ServerManager implements Runnable {
 		socketClient = s;
 	}
 	
-	
+	//new ServerManager(socketduserveur, c_messages_sent, c_messages_received,
+            		//messages_received, messages_sent, context));
 	
 	public ServerManager(Socket socketClient,
 			ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent,
@@ -55,31 +56,31 @@ public class ServerManager implements Runnable {
 				String s = new String(down_packet);
 				//cas reception d'un ping
 				if (s.contains("ping")) {
-					byte data_out[]=s.getBytes();
-					out.write(data_out);
-					out.flush();
+                                    byte data_out[]=s.getBytes();
+                                    out.write(data_out);
+                                    out.flush();
 				}
 				//cas de reception d'un acquitement
 				else if (s.contains("ACK")) {
-					String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
-					String Ip_origine = socketClient.getInetAddress().toString();
-					if (c_messages_received.containsKey(Ip_origine + id_msg)) {
-						c_messages_received.get(Ip_origine + id_msg).put(Ip_origine, true);
-					}
-					if (c_messages_sent.containsKey(Ip_origine + id_msg)) {
-						c_messages_sent.get(Ip_origine + id_msg).put(Ip_origine, true);
-					}
+                                    String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
+                                    String Ip_origine = socketClient.getInetAddress().toString();
+                                    if (c_messages_received.containsKey(Ip_origine + id_msg)) {
+                                        c_messages_received.get(Ip_origine + id_msg).put(Ip_origine, true);
+                                    }
+                                    if (c_messages_sent.containsKey(Ip_origine + id_msg)) {
+                                        c_messages_sent.get(Ip_origine + id_msg).put(Ip_origine, true);
+                                    }
 				} 
-				else {
-					String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
-					String msg = s.replace("/"+id_msg+"/", "");
-					ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
-					for (String ip : context.keySet())
-						context_message.put(ip, false);
-					c_messages_received.put(id_msg, context_message);
-					messages_received.put(id_msg, msg);
-					Thread b = new Thread(new Broadcast("/"+id_msg + "/"+ "ACK", context));
-			        b.start();
+				else if (!s.isEmpty()){
+                                    String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
+                                    String msg = s.replace("/"+id_msg+"/", "");
+                                    ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
+                                    for (String ip : context.keySet())
+                                        context_message.put(ip, false);
+                                    c_messages_received.put(id_msg, context_message);
+                                    messages_received.put(id_msg, msg);
+                                    Thread b = new Thread(new Broadcast("/"+id_msg + "/"+ "ACK", context));
+                                    b.start();
 				}
 				//cas de reception d'un message
 				String m = new String(b_read + " origine: " + socketClient.getInetAddress().toString());
