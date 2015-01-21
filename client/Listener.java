@@ -62,11 +62,12 @@ public class Listener implements Runnable{
 	public void run() {
         try {
             ServerSocket socketserver = new ServerSocket(port);
-            
-            Socket socketduserveur = socketserver.accept();
-            Thread t = new Thread(new ServerManager(socketduserveur, c_messages_sent, c_messages_received,
-            		messages_received, messages_sent, context));
-            t.start();
+            while(true){
+                Socket socketduserveur = socketserver.accept();
+                Thread t = new Thread(new ServerManager(socketduserveur, c_messages_sent, c_messages_received,
+                            messages_received, messages_sent, context));
+                t.start();
+            }
             //socketserver.close();
         } catch (IOException ex) {
             Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);
