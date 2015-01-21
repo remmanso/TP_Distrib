@@ -44,9 +44,8 @@ public class Broadcast implements Runnable{
     public void run(){
         try{
                 InputStream in;
-                OutputStream out;               
-                System.out.println("Broadcast in process...");
-                System.out.println("Broadcast de " + message);
+                OutputStream out;
+                System.out.println("Broadcast in process... de : " + message);
                 for(String s : list_adr.keySet()){
                     if("LocalHost".equals(s) || !list_adr.get(s))
                         continue;
@@ -77,7 +76,7 @@ public class Broadcast implements Runnable{
                 e.printStackTrace();
         }catch (SocketException e) {
 
-                //e.printStackTrace();
+                e.printStackTrace();
         }catch (IOException e) {
 
                 e.printStackTrace();
