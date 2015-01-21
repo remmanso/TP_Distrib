@@ -58,8 +58,6 @@ public class ServerManager implements Runnable {
 				if (b_read != -1)
 					System.out.println("Debug : " + s);
 				//cas reception d'un ping
-                                if (b_read != -1)
-                                    System.out.println("debug : " + s);
 				if (s.contains("ping")) {
                                     byte data_out[]=s.getBytes();
                                     out.write(data_out);
@@ -69,7 +67,9 @@ public class ServerManager implements Runnable {
 				else if (s.contains("ACK")) {
 					String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
 					String Ip_origine = socketClient.getInetAddress().toString();
-					//System.out.println("ip + id : " + Ip_origine + " " + id_msg);
+					System.out.println("ip + id : " + Ip_origine + " " + id_msg);
+					System.out.println(c_messages_received.toString());
+	            	System.out.println(c_messages_sent.toString());
 					if (c_messages_received.containsKey(id_msg)) {
 						c_messages_received.get(id_msg).put(Ip_origine, true);
 					}
@@ -81,9 +81,14 @@ public class ServerManager implements Runnable {
 				else if (b_read != - 1) {
 					String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
 					String msg = s.replace("/"+id_msg+"/", "");
+					String Ip_origine = socketClient.getInetAddress().toString();
 					ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
-					for (String ip : context.keySet())
-						context_message.put(ip, false);
+					for (String ip : context.keySet()) {
+						if (Ip_origine.equals(ip))
+							context_message.put(ip, true);
+						else 
+							context_message.put(ip, false);
+					}
 					c_messages_received.put(id_msg, context_message);
 					messages_received.put(id_msg, msg);
 					Thread b = new Thread(new Broadcast("/"+id_msg + "/"+ "ACK", context));
