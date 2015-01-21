@@ -59,8 +59,8 @@ public class Broadcast implements Runnable{
                         ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
     					for (String ip : list_adr.keySet())
     						context_message.put(ip, false);
-    					c_messages_sent.put(id_msg, context_message);
-    					messages_sent.put(id_msg, m);
+    					c_messages_sent.put(Integer.toString(m.hashCode()), context_message);
+    					messages_sent.put(Integer.toString(m.hashCode()), m);
                     }
                     
                     byte b[] = message.getBytes();
