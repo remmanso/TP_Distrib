@@ -63,9 +63,9 @@ public class ServerManager implements Runnable {
                 else if (s.contains("ACK")) {
                     String id_msg = s.substring(s.indexOf("/") + 1, s.indexOf("/", s.indexOf("/") + 1));
                     String Ip_origine = socketClient.getInetAddress().getHostAddress().toString();
-                    System.out.println("ACK : " + s + "de :" + Ip_origine);
+                    //System.out.println("ACK : " + s + "de :" + Ip_origine);
                     Ip_origine = Ip_origine.replace("/", "");
-                    System.out.println("ACK : " + s + "   " + Ip_origine);
+                    //System.out.println("ACK : " + s + "   " + Ip_origine);
                     if (c_messages_received.containsKey(id_msg)) {
                         c_messages_received.get(id_msg).put(Ip_origine, true);
                     }
@@ -78,7 +78,7 @@ public class ServerManager implements Runnable {
                     cont_connected.put(Ip_origine,true);
                 }//cas reception d'un message
                 else if (b_read != - 1) {
-                    System.out.println("MSG : " + s);
+                    //System.out.println("MSG : " + s);
                     String id_msg = s.substring(s.indexOf("/") + 1, s.indexOf("/", s.indexOf("/") + 1));
                     String msg = s.replace("/" + id_msg + "/", "");
                     String Ip_origine = socketClient.getInetAddress().getHostAddress().toString();
@@ -93,7 +93,7 @@ public class ServerManager implements Runnable {
                     }
                     c_messages_received.put(id_msg, context_message);
                     messages_received.put(id_msg, msg);
-                    System.out.println("ServerManager: " + c_messages_received);      
+                    //System.out.println("ServerManager: " + c_messages_received);      
                     Thread b = new Thread(new Broadcast("/" + id_msg + "/" + "ACK", context));
                     b.start();
                 }

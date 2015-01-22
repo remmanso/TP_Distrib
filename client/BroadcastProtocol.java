@@ -48,8 +48,9 @@ public class BroadcastProtocol {
         while (context.contains(false)) {
             Thread.sleep(10);
         }
+        new Thread(new Broadcast("Connected", context)).start();
         while(cont_connected.contains(false)){
-            Thread.sleep(10);
+            Thread.sleep(100);
             new Thread(new Broadcast("Connected", context)).start();
             if(context.contains(false)){
                 for(String s:context.keySet()){
@@ -58,7 +59,9 @@ public class BroadcastProtocol {
                     }
                 }
             }
+            //System.out.println("context connected : " + cont_connected);
         }
+        System.out.println("Connected");
         b.start();
 
         while (true) {
