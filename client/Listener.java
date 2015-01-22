@@ -34,30 +34,20 @@ public class Listener implements Runnable{
         this.port = port;
     }
     
-    
-    
-
-
-
-	public Listener(int port,
-			ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent,
-			ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received,
-			ConcurrentHashMap<String, String> messages_received,
-			ConcurrentHashMap<String, String> messages_sent,
-			ConcurrentHashMap<String, Boolean> context) {
-		super();
-		this.port = port;
-		this.c_messages_sent = c_messages_sent;
-		this.c_messages_received = c_messages_received;
-		this.messages_received = messages_received;
-		this.messages_sent = messages_sent;
-		this.context = context;
-	}
-
-
-
-
-
+    public Listener(int port,
+        ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent,
+        ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received,
+        ConcurrentHashMap<String, String> messages_received,
+        ConcurrentHashMap<String, String> messages_sent,
+        ConcurrentHashMap<String, Boolean> context) {
+        super();
+        this.port = port;
+        this.c_messages_sent = c_messages_sent;
+        this.c_messages_received = c_messages_received;
+        this.messages_received = messages_received;
+        this.messages_sent = messages_sent;
+        this.context = context;
+    }
 
 	public void run() {
         try {
