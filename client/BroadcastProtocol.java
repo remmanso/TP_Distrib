@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.LinkedList;
+import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,16 +13,25 @@ public class BroadcastProtocol {
 			InterruptedException {
 
 		if (args.length == 0) {
-			System.out
-					.println("Veuillez rentrer une ou plusieurs adresse IP en arguments");
+			System.out.println("Veuillez rentrer une ou plusieurs adresse IP en arguments");
 			return;
 		}
-
+		
+		if (!args[args.length - 1].equals("1") && !args[args.length - 1].equals("0")) {
+			System.out.println("Veuillez insérer 1 pour calculer le débit 0 sinon en fin d'argument");
+		}
+		
+		boolean debit = args[args.length - 1].equals("1");
+		
+		DeliveredCounter counter_debit = new DeliveredCounter();
+		
 		ConcurrentHashMap<String, Boolean> context = new ConcurrentHashMap<String, Boolean>();
 		ConcurrentHashMap<String, Boolean> cont_connected = new ConcurrentHashMap<String, Boolean>();
-		String[] addresses = new String[args.length];
+		String[] addresses = new String[args.length - 1];
 		int i = 0;
 		for (String arg : args) {
+			if (i == args.length - 1)
+				continue;
 			addresses[i] = InetAddress.getByName(arg).getHostAddress();
 			context.put(addresses[i], false);
 			cont_connected.put(addresses[i], false);
@@ -43,7 +53,7 @@ public class BroadcastProtocol {
 				cont_connected));
 
 		Thread b = new Thread(new MessageManager(context, c_messages_sent,
-				messages_sent));
+				messages_sent, counter_debit, debit));
 
 		c2010.start();
 		while (context.contains(false)) {
@@ -64,22 +74,32 @@ public class BroadcastProtocol {
 		}
 		System.out.println("Connected");
 		b.start();
+		if (debit) {
+			//creation du thread CalculDebitMess
+		}
 
 		while (true) {
-			checkDeliver(c_messages_sent, messages_sent, context);
-			checkDeliver(c_messages_received, messages_received, context);
+			checkDeliver(c_messages_sent, messages_sent, context, true, counter_debit, debit);
+			checkDeliver(c_messages_received, messages_received, context, false, counter_debit, debit);
 		}
 
 	}
 
-	public static void deliver(String s) {
-		System.out.println("Message délivré: " + s);
+	public static void deliver(String s, boolean sent, DeliveredCounter counter_debit, boolean debit) {
+		if (!debit)
+			System.out.println("Message délivré: " + s);
+		if (debit) {
+			counter_debit.inc();
+		}
 	}
 
 	public static void checkDeliver(
 			ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> context_msg_hash,
 			ConcurrentHashMap<String, String> message_hash,
-			ConcurrentHashMap<String, Boolean> context) {
+			ConcurrentHashMap<String, Boolean> context,
+			boolean sent,
+			DeliveredCounter counter_debit,
+			boolean debit) {
 
 		LinkedList<String> messages_to_deliver = new LinkedList<String>();
 		// on regarde quelle machine a acquite les messages envoye par cette
@@ -104,7 +124,7 @@ public class BroadcastProtocol {
 		}
 		for (String s : messages_to_deliver) {
 			context_msg_hash.remove(s);
-			deliver(message_hash.get(s));
+			deliver(message_hash.get(s), sent, counter_debit, debit);
 			message_hash.remove(s);
 		}
 	}
