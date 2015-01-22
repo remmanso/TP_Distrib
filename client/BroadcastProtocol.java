@@ -69,12 +69,11 @@ public class BroadcastProtocol {
 					}
 				}
 			}
-			// System.out.println("context connected : " + cont_connected);
 		}
 		System.out.println("Connected");
 		b.start();
 		if (debit) {
-			//creation du thread CalculDebitMess
+			new Thread(new CalculDebitMessage(counter_debit, 1000000)).start();
 		}
 
 		while (true) {
@@ -87,7 +86,7 @@ public class BroadcastProtocol {
 	public static void deliver(String s, boolean sent, DeliveredCounter counter_debit, boolean debit) {
 		if (!debit)
 			System.out.println("Message délivré: " + s);
-		if (debit) {
+		else {
 			counter_debit.inc();
 		}
 	}
