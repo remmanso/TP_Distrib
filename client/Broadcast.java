@@ -2,6 +2,7 @@
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -52,14 +53,15 @@ public class Broadcast implements Runnable{
                     Socket socket = new Socket(s, 2010);
                     
                     if(!message.contains("ACK") && !message.isEmpty()){
-                        String m = message + socket.getInetAddress().toString();
+                        String m = message + InetAddress.getLocalHost();
+                        String original_message = message;
                         message = "/" + m.hashCode() + "/" + message;
                         String id_msg = message.substring(m.indexOf("/")+1, m.indexOf("/", m.indexOf("/")+1));
                         ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
     					for (String ip : list_adr.keySet())
     						context_message.put(ip, false);
     					c_messages_sent.put(Integer.toString(m.hashCode()), context_message);
-    					messages_sent.put(Integer.toString(m.hashCode()), m);
+    					messages_sent.put(Integer.toString(m.hashCode()), original_message);
                     }
                     
                     byte b[] = message.getBytes();
