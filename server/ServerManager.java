@@ -65,7 +65,6 @@ public class ServerManager implements Runnable {
 				else if (s.contains("ACK")) {
 	                String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
 	                String Ip_origine = socketClient.getInetAddress().toString();
-	                System.out.println("ip + id : " + Ip_origine + " " + id_msg);
 	                Ip_origine = Ip_origine.replace("/", "");
 	                if (c_messages_received.containsKey(id_msg)) {
 	                        c_messages_received.get(id_msg).put(Ip_origine, true);
@@ -73,8 +72,6 @@ public class ServerManager implements Runnable {
 	                if (c_messages_sent.containsKey(id_msg)) {
 	                        c_messages_sent.get(id_msg).put(Ip_origine, true);
 	                }
-	                System.out.println(c_messages_received.toString());
-	                System.out.println(c_messages_sent.toString());
 				} 
 				//cas reception d'un message
 				else if (b_read != - 1) {
