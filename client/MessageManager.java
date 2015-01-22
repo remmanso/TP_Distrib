@@ -25,7 +25,8 @@ public class MessageManager implements Runnable {
 		String message = "";
 		while (true) {
 			try {
-				message = "Hello n°" + cpt + " from " + InetAddress.getLocalHost();
+				message = "Hello n°" + cpt + " from "
+						+ InetAddress.getLocalHost();
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}

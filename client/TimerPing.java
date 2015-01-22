@@ -10,8 +10,7 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.TimerTask;
 
-public class TimerPing extends TimerTask 
-{
+public class TimerPing extends TimerTask {
 	private String addresse;
 	private int port;
 	private ConcurrentHashMap<String, Boolean> context;
@@ -22,27 +21,29 @@ public class TimerPing extends TimerTask
 		this.port = port;
 	}
 
-	public TimerPing(String ad, int port, ConcurrentHashMap<String, Boolean> context) {
+	public TimerPing(String ad, int port,
+			ConcurrentHashMap<String, Boolean> context) {
 		addresse = ad;
 		this.port = port;
 		this.context = context;
 	}
-	
-	public void run(){
+
+	public void run() {
 
 		try {
-			
+
 			InputStream in;
 			OutputStream out;
 			long time;
 			int b_read = 0;
-			byte b[]= "000102030405060708091011121314151617181920212223242526272829".getBytes();
+			byte b[] = "000102030405060708091011121314151617181920212223242526272829"
+					.getBytes();
 			String s = new String(b);
 			s = "ping".concat(s);
 			b = s.getBytes();
-                        
-			socket = new Socket(this.addresse, port);  
-			socket.setSoTimeout(1000); 
+
+			socket = new Socket(this.addresse, port);
+			socket.setSoTimeout(1000);
 
 			time = System.nanoTime();
 			out = socket.getOutputStream();
@@ -54,18 +55,18 @@ public class TimerPing extends TimerTask
 			double time_ms = (double) time / 1000000.0;
 			context.put(addresse, true);
 			socket.close();
-                        
-		}catch (UnknownHostException e) {
+
+		} catch (UnknownHostException e) {
 			e.printStackTrace();
-		}catch (ConnectException e) {
+		} catch (ConnectException e) {
 			context.put(addresse, false);
-		}catch (SocketTimeoutException e){
+		} catch (SocketTimeoutException e) {
 			context.put(addresse, false);
-		}catch (SocketException e) {
+		} catch (SocketException e) {
 			context.put(addresse, false);
-		}catch (IOException e) {
-			
+		} catch (IOException e) {
+
 			e.printStackTrace();
-		} 
+		}
 	}
 }
