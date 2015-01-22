@@ -62,7 +62,7 @@ public class Broadcast implements Runnable {
 						original_message);
 			}
 			for (String s : list_adr.keySet()) {
-				if ("LocalHost".equals(s)) {
+				if ("LocalHost".equals(s) || !list_adr.get(s)) {
 					continue;
 				}
 				Socket socket = new Socket(s, 2010);
@@ -70,12 +70,13 @@ public class Broadcast implements Runnable {
 				out = socket.getOutputStream();
 				in = socket.getInputStream();
 				out.write(b);
+				out.flush();
 				socket.close();
 			}
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (SocketException e) {
-			// e.printStackTrace();
+			 e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

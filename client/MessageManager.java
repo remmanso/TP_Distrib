@@ -39,7 +39,7 @@ public class MessageManager implements Runnable {
 			b.start();
 			try {
 				if (debit)
-					Thread.sleep(5);
+					Thread.sleep(5000);
 				else
 					Thread.sleep(100);
 			} catch (InterruptedException e) {

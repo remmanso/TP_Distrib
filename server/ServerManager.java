@@ -46,9 +46,10 @@ public class ServerManager implements Runnable {
 			DataInputStream in = new DataInputStream(
 					socketClient.getInputStream());
 
-			byte down_packet[] = new byte[65000];
+			byte down_packet[] = new byte[2000000];
 			int b_read = in.read(down_packet);
 			String s = new String(down_packet);
+			
 			// cas reception d'un ping
 			if (s.contains("ping")) {
 				byte data_out[] = s.getBytes();
@@ -61,23 +62,24 @@ public class ServerManager implements Runnable {
 				String Ip_origine = socketClient.getInetAddress()
 						.getHostAddress().toString();
 				Ip_origine = Ip_origine.replace("/", "");
-				// System.out.println("ACK : " + s + "   " + Ip_origine);
 				if (c_messages_received.containsKey(id_msg)) {
 					c_messages_received.get(id_msg).put(Ip_origine, true);
 				}
 				if (c_messages_sent.containsKey(id_msg)) {
 					c_messages_sent.get(id_msg).put(Ip_origine, true);
 				}
-				// System.out.println("messages sent : " + c_messages_sent);
-				// System.out.println("messages recues : " +
-				// c_messages_received);
 			} else if (s.contains("Connected")) {
 				String Ip_origine = socketClient.getInetAddress()
 						.getHostAddress().toString();
 				cont_connected.put(Ip_origine, true);
 			}// cas reception d'un message
 			else if (b_read != -1) {
-				// System.out.println("MSG : " + s);
+				/*b_read = in.read(down_packet);
+				while (b_read != -1) {
+					b_read = in.read(down_packet);
+					s += new String(down_packet);
+				}*/
+				//System.out.println("message longueur : " + s.length());
 				String id_msg = s.substring(s.indexOf("/") + 1,
 						s.indexOf("/", s.indexOf("/") + 1));
 				String msg = s.replace("/" + id_msg + "/", "");
@@ -94,11 +96,11 @@ public class ServerManager implements Runnable {
 				}
 				c_messages_received.put(id_msg, context_message);
 				messages_received.put(id_msg, msg);
-				// System.out.println("ACK :  " + id_msg);
 				Thread b = new Thread(new Broadcast("/" + id_msg + "/" + "ACK",
 						context));
 				b.start();
 			}
+			socketClient.close();
 		} catch (SocketException e) {
 			// e.printStackTrace();
 		} catch (IOException e) {
