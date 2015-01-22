@@ -48,6 +48,7 @@ public class BroadcastProtocol {
         while (context.contains(false)) {
             Thread.sleep(10);
         }
+        new Thread(new Broadcast("Connected", context)).start();
         while(cont_connected.contains(false)){
             Thread.sleep(10);
             new Thread(new Broadcast("Connected", context)).start();
