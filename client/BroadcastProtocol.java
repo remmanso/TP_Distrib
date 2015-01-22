@@ -7,7 +7,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class BroadcastProtocol {
+    
+    private static long timer;
+    
+    public static long getTimer() {
+        return timer;
+    }
 
+    public static void setTimer(long timer) {
+        BroadcastProtocol.timer = timer;
+    }
+    
     public static void main(String[] args) throws IOException,
             InterruptedException {
 
@@ -72,7 +82,7 @@ public class BroadcastProtocol {
             }
             // System.out.println("context connected : " + cont_connected);
         }
-        long timer = 0;
+        
         System.out.println("Connected");
         b.start();
         if (debit) {
@@ -90,14 +100,16 @@ public class BroadcastProtocol {
         if (!debit) {
             System.out.println("Message délivré: " + s);
         } else {
-            counter_debit.inc();
-            if (counter_debit.get() == 0) {
-                timer = System.currentTimeMillis();
-            } else if (counter_debit.get() == 20) {
-                timer = System.currentTimeMillis() - timer;
+            int nb_msg = counter_debit.get();
+            if (counter_debit.getFirst()) {
+                setTimer(System.currentTimeMillis());
+                counter_debit.setFirst(false);
+            } else if (nb_msg == 20) {
+                setTimer(System.currentTimeMillis() - getTimer());
                 System.out.println("Difference de temps :" + timer);
-                new Thread(new CalculDebitMessage(counter_debit, 1000000, timer)).start();
+                new Thread(new CalculDebitMessage(counter_debit, 1000000, getTimer(), nb_msg)).start();
             }
+            counter_debit.inc();
         }
     }
 

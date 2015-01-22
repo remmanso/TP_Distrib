@@ -47,7 +47,7 @@ public class ServerManager implements Runnable {
                     socketClient.getInputStream());
 
             //while (true) {
-            byte down_packet[] = new byte[65000];
+            byte down_packet[] = new byte[2000000];
             int b_read = in.read(down_packet);
             String s = new String(down_packet);
             // cas reception d'un ping
