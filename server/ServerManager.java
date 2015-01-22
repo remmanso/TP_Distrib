@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerManager implements Runnable {
 
-
     private Socket socketClient;
     private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent
             = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
@@ -19,6 +18,7 @@ public class ServerManager implements Runnable {
     private ConcurrentHashMap<String, String> messages_sent
             = new ConcurrentHashMap<String, String>();
     private ConcurrentHashMap<String, Boolean> context;
+    private ConcurrentHashMap<String, Boolean> cont_connected;
 
     public ServerManager(Socket s) {
         socketClient = s;
@@ -29,7 +29,8 @@ public class ServerManager implements Runnable {
             ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received,
             ConcurrentHashMap<String, String> messages_received,
             ConcurrentHashMap<String, String> messages_sent,
-            ConcurrentHashMap<String, Boolean> context) {
+            ConcurrentHashMap<String, Boolean> context,
+            ConcurrentHashMap<String, Boolean> cont_connected) {
         super();
         this.socketClient = socketClient;
         this.c_messages_sent = c_messages_sent;
@@ -37,17 +38,16 @@ public class ServerManager implements Runnable {
         this.messages_received = messages_received;
         this.messages_sent = messages_sent;
         this.context = context;
+        this.cont_connected = cont_connected;        
     }
 
-	@Override
-	public void run() {
-		try {
-			DataOutputStream out = new DataOutputStream(
-					socketClient.getOutputStream());
-			DataInputStream in = new DataInputStream(
-					socketClient.getInputStream());
-			;
-
+    @Override
+    public void run() {
+        try {
+            DataOutputStream out = new DataOutputStream(
+                    socketClient.getOutputStream());
+            DataInputStream in = new DataInputStream(
+                    socketClient.getInputStream());
 
             while (true) {
                 byte down_packet[] = new byte[65000];
@@ -57,11 +57,13 @@ public class ServerManager implements Runnable {
                 if (s.contains("ping")) {
                     byte data_out[] = s.getBytes();
                     out.write(data_out);
+                    System.out.println("ping");
                     out.flush();
                 } //cas de reception d'un acquitement
                 else if (s.contains("ACK")) {
                     String id_msg = s.substring(s.indexOf("/") + 1, s.indexOf("/", s.indexOf("/") + 1));
                     String Ip_origine = socketClient.getInetAddress().getHostAddress().toString();
+                    System.out.println("ACK : " + s + "de :" + Ip_origine);
                     Ip_origine = Ip_origine.replace("/", "");
                     System.out.println("ACK : " + s + "   " + Ip_origine);
                     if (c_messages_received.containsKey(id_msg)) {
@@ -70,11 +72,13 @@ public class ServerManager implements Runnable {
                     if (c_messages_sent.containsKey(id_msg)) {
                         c_messages_sent.get(id_msg).put(Ip_origine, true);
                     }
-                    System.out.println("message recu : " + c_messages_received.toString());
-                    System.out.println("message envoyé " +c_messages_sent.toString());
-                } //cas reception d'un message
+                } 
+                else if (s.contains("Connected")){
+                    String Ip_origine = socketClient.getInetAddress().getHostAddress().toString();
+                    cont_connected.put(Ip_origine,true);
+                }//cas reception d'un message
                 else if (b_read != - 1) {
-                	System.out.println("MSG : " + s);
+                    System.out.println("MSG : " + s);
                     String id_msg = s.substring(s.indexOf("/") + 1, s.indexOf("/", s.indexOf("/") + 1));
                     String msg = s.replace("/" + id_msg + "/", "");
                     String Ip_origine = socketClient.getInetAddress().getHostAddress().toString();
@@ -89,13 +93,13 @@ public class ServerManager implements Runnable {
                     }
                     c_messages_received.put(id_msg, context_message);
                     messages_received.put(id_msg, msg);
-                    System.out.println("id qui va être envoyé en ack : " + id_msg);
+                    System.out.println("ServerManager: " + c_messages_received);      
                     Thread b = new Thread(new Broadcast("/" + id_msg + "/" + "ACK", context));
                     b.start();
                 }
             }
         } catch (SocketException e) {
-        	//e.printStackTrace();
+            //e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -15,11 +15,13 @@ public class BroadcastProtocol {
         }
 
         ConcurrentHashMap<String, Boolean> context = new ConcurrentHashMap<String, Boolean>();
+        ConcurrentHashMap<String, Boolean> cont_connected = new ConcurrentHashMap<String, Boolean>();
         String[] addresses = new String[args.length];
         int i = 0;
         for (String arg : args) {
             addresses[i] = InetAddress.getByName(arg).getHostAddress();
             context.put(addresses[i], false);
+            cont_connected.put(addresses[i], false);
             i++;
         }
         
@@ -38,13 +40,24 @@ public class BroadcastProtocol {
         t.start();
 
         Thread c2010 = new Thread(new Listener(2010, c_messages_sent, c_messages_received,
-                messages_received, messages_sent, context));
-        c2010.start();
+        		messages_received, messages_sent, context, cont_connected));
         
         Thread b = new Thread(new MessageManager(context, c_messages_sent, messages_sent));
-
+        
+        c2010.start();
         while (context.contains(false)) {
             Thread.sleep(10);
+        }
+        while(cont_connected.contains(false)){
+            Thread.sleep(10);
+            new Thread(new Broadcast("Connected", context)).start();
+            if(context.contains(false)){
+                for(String s:context.keySet()){
+                    if(context.get(s)==false){
+                        cont_connected.remove(s);
+                    }
+                }
+            }
         }
         b.start();
 

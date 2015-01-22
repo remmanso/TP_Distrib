@@ -74,7 +74,6 @@ public class Broadcast implements Runnable {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (SocketException e) {
-        	
             //e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
