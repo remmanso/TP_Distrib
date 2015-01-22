@@ -60,10 +60,10 @@ public class ServerManager implements Runnable {
                     out.flush();
                 } //cas de reception d'un acquitement
                 else if (s.contains("ACK")) {
-                	System.out.println("ACK : " + s);
                     String id_msg = s.substring(s.indexOf("/") + 1, s.indexOf("/", s.indexOf("/") + 1));
                     String Ip_origine = socketClient.getInetAddress().getHostAddress().toString();
                     Ip_origine = Ip_origine.replace("/", "");
+                    System.out.println("ACK : " + s + "   " + Ip_origine);
                     if (c_messages_received.containsKey(id_msg)) {
                         c_messages_received.get(id_msg).put(Ip_origine, true);
                     }
@@ -95,11 +95,7 @@ public class ServerManager implements Runnable {
                 }
             }
         } catch (SocketException e) {
-            try {
-                socketClient.close();
-            } catch (IOException exc) {
-                exc.printStackTrace();
-            }
+        	//e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

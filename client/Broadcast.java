@@ -58,11 +58,9 @@ public class Broadcast implements Runnable {
                 c_messages_sent.put(Integer.toString(m.hashCode()), context_message);
                 messages_sent.put(Integer.toString(m.hashCode()), original_message);
             }
-            
+            System.out.println(list_adr.toString());
             for (String s : list_adr.keySet()) {
-            	if (!list_adr.get(s))
-            		continue;
-                if ("LocalHost".equals(s) || !list_adr.get(s)) {
+                if ("LocalHost".equals(s)) {
                     continue;
                 }
                 Socket socket = new Socket(s, 2010);
@@ -76,8 +74,8 @@ public class Broadcast implements Runnable {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (SocketException e) {
-
-            e.printStackTrace();
+        	
+            //e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

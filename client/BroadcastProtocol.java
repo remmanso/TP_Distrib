@@ -40,7 +40,7 @@ public class BroadcastProtocol {
         Thread c2010 = new Thread(new Listener(2010, c_messages_sent, c_messages_received,
                 messages_received, messages_sent, context));
         c2010.start();
-
+        
         Thread b = new Thread(new MessageManager(context, c_messages_sent, messages_sent));
 
         while (context.contains(false)) {
