@@ -22,7 +22,7 @@ public class BroadcastProtocol {
             context.put(addresses[i], false);
             i++;
         }
-
+        
         ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent
                 = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
         ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received

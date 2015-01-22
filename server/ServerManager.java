@@ -58,8 +58,7 @@ public class ServerManager implements Runnable {
                 } //cas de reception d'un acquitement
                 else if (s.contains("ACK")) {
                     String id_msg = s.substring(s.indexOf("/") + 1, s.indexOf("/", s.indexOf("/") + 1));
-                    
-                    String Ip_origine = socketClient.getInetAddress().toString();
+                    String Ip_origine = socketClient.getInetAddress().getHostAddress().toString();
                     System.out.println("ACK1: " + id_msg + "Ip_origine: " + Ip_origine);
                     Ip_origine = Ip_origine.replace("/", "");
                     System.out.println("ACK1: " + id_msg + "Ip_origine: " + Ip_origine);
@@ -73,7 +72,7 @@ public class ServerManager implements Runnable {
                 else if (b_read != - 1) {
                     String id_msg = s.substring(s.indexOf("/") + 1, s.indexOf("/", s.indexOf("/") + 1));
                     String msg = s.replace("/" + id_msg + "/", "");
-                    String Ip_origine = socketClient.getInetAddress().toString();
+                    String Ip_origine = socketClient.getInetAddress().getHostAddress().toString();
                     Ip_origine = Ip_origine.replace("/", "");
                     ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
                     for (String ip : context.keySet()) {
@@ -85,7 +84,7 @@ public class ServerManager implements Runnable {
                     }
                     c_messages_received.put(id_msg, context_message);
                     messages_received.put(id_msg, msg);
-                    System.out.println("ServerManager: " + c_messages_received );
+                    System.out.println("ServerManager: " + c_messages_received);      
                     Thread b = new Thread(new Broadcast("/" + id_msg + "/" + "ACK", context));
                     b.start();
                 }

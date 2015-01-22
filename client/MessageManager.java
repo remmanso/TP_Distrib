@@ -18,27 +18,25 @@ public class MessageManager implements Runnable {
         this.messages_sent = messages_sent;
     }
 
-
     @Override
     public void run() {
         int cpt = 1;
         String message = "";
-        //while (cpt == 1) {
-            try {
-                message = "Hello n°" + cpt + " from " + InetAddress.getLocalHost();
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
-            Thread b = new Thread(new Broadcast(message, context, c_messages_sent, messages_sent));
-            b.start();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            cpt++;
+        //while (true) {
+        try {
+            message = "Hello n°" + cpt + " from " + InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        Thread b = new Thread(new Broadcast(message, context, c_messages_sent, messages_sent));
+        b.start();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        cpt++;
         //}
-
     }
 
 }
