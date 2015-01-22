@@ -1,3 +1,5 @@
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -41,10 +43,12 @@ public class ServerManager implements Runnable {
 	@Override
 	public void run() {
 		try {
-			DataOutputStream out = new DataOutputStream(
+			/*DataOutputStream out = new DataOutputStream(
 					socketClient.getOutputStream());
 			DataInputStream in = new DataInputStream(
-					socketClient.getInputStream());
+					socketClient.getInputStream());*/
+			BufferedInputStream in = new BufferedInputStream(socketClient.getInputStream());
+			BufferedOutputStream out = new BufferedOutputStream(socketClient.getOutputStream());
 
 			byte down_packet[] = new byte[150000];
 			int b_read = in.read(down_packet);

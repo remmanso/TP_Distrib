@@ -1,3 +1,5 @@
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,8 +33,8 @@ public class TimerPing extends TimerTask {
 
 	public void run() {
 		try {
-			InputStream in;
-			OutputStream out;
+			BufferedInputStream in;
+			BufferedOutputStream out;
 			long time;
 			int b_read = 0;
 			byte b[] = "000102030405060708091011121314151617181920212223242526272829"
@@ -45,8 +47,8 @@ public class TimerPing extends TimerTask {
 			socket.setSoTimeout(1000);
 
 			time = System.nanoTime();
-			out = socket.getOutputStream();
-			in = socket.getInputStream();
+			out = new BufferedOutputStream(socket.getOutputStream());
+			in = new BufferedInputStream(socket.getInputStream());
 			out.write(b);
 			b_read = in.read(b);
 
