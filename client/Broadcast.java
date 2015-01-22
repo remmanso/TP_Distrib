@@ -46,8 +46,6 @@ public class Broadcast implements Runnable {
         try {
             InputStream in;
             OutputStream out;
-            if(!message.isEmpty())
-            
             if (!message.contains("ACK") && !message.isEmpty()) {
                 String m = message + InetAddress.getLocalHost().getHostAddress();
                 String original_message = message;
@@ -57,7 +55,6 @@ public class Broadcast implements Runnable {
                 for (String ip : list_adr.keySet()) {
                     context_message.put(ip, false);
                 }
-                System.out.println("Broadcast : " + Integer.toString(m.hashCode()));
                 c_messages_sent.put(Integer.toString(m.hashCode()), context_message);
                 messages_sent.put(Integer.toString(m.hashCode()), original_message);
             }
@@ -69,6 +66,7 @@ public class Broadcast implements Runnable {
                     continue;
                 }
                 Socket socket = new Socket(s, 2010);
+                System.out.println("BROADCAST : " + message);
                 byte b[] = message.getBytes();
                 out = socket.getOutputStream();
                 in = socket.getInputStream();
@@ -78,8 +76,7 @@ public class Broadcast implements Runnable {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (SocketException e) {
-
-            e.printStackTrace();
+            //e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

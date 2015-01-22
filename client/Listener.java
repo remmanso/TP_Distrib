@@ -30,6 +30,7 @@ public class Listener implements Runnable {
             = new ConcurrentHashMap<String, String>();
 
     private ConcurrentHashMap<String, Boolean> context;
+    private ConcurrentHashMap<String, Boolean> cont_connected;
 
     public Listener(int port) {
         this.port = port;
@@ -40,7 +41,8 @@ public class Listener implements Runnable {
             ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received,
             ConcurrentHashMap<String, String> messages_received,
             ConcurrentHashMap<String, String> messages_sent,
-            ConcurrentHashMap<String, Boolean> context) {
+            ConcurrentHashMap<String, Boolean> context,
+            ConcurrentHashMap<String, Boolean> cont_connected) {
         super();
         this.port = port;
         this.c_messages_sent = c_messages_sent;
@@ -48,6 +50,7 @@ public class Listener implements Runnable {
         this.messages_received = messages_received;
         this.messages_sent = messages_sent;
         this.context = context;
+        this.cont_connected = cont_connected;
     }
 
     public void run() {
@@ -56,7 +59,7 @@ public class Listener implements Runnable {
             while (true) {
                 Socket socketduserveur = socketserver.accept();
                 Thread t = new Thread(new ServerManager(socketduserveur, c_messages_sent, c_messages_received,
-                        messages_received, messages_sent, context));
+                        messages_received, messages_sent, context, cont_connected));
                 t.start();
             }
             //socketserver.close();
