@@ -4,6 +4,8 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Timer;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 
 public class FaultDetector implements Runnable {
@@ -20,12 +22,11 @@ public class FaultDetector implements Runnable {
 	
 	@Override
 	public void run() {		
-		
 		TimerPing t_ping;
 		Timer timer = new Timer();
 		for (int i = 0; i < args.length; i++) {
 			t_ping = new TimerPing(args[i], port, context);
-			timer.scheduleAtFixedRate(t_ping, 10000, 1000);
+			timer.scheduleAtFixedRate(t_ping, 1000, 1000);
 		}
 		
 		ServerSocket socketserver  ;

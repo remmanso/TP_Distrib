@@ -56,7 +56,7 @@ public class TimerPing extends TimerTask
 			time = System.nanoTime() - time;
 			double time_ms = (double) time / 1000000.0;
 			//System.out.println("nb octet re��u : " + b_read + " en " + time_ms + "ms ");
-			
+			context.put(addresse, true);
 			socket.close();
                         
 		}catch (UnknownHostException e) {
