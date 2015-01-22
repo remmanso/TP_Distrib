@@ -39,12 +39,10 @@ public class BroadcastProtocol {
                             messages_received, messages_sent, context));
             c2010.start();
 
-            String message = "hello " + InetAddress.getLocalHost();
-            Thread b = new Thread(new Broadcast(message, context, c_messages_sent, messages_sent));
+            Thread b = new Thread(new MessageManager(context, c_messages_sent, messages_sent));
             
             while(context.contains(false)){
-                Thread.sleep(100);
-                System.out.println(context);
+                Thread.sleep(10);
             }
             
             b.start();
