@@ -50,8 +50,6 @@ public class BroadcastProtocol {
             b.start();
 
             while (true) {
-            	//System.out.println(c_messages_received.toString());
-            	//System.out.println(c_messages_sent.toString());
 //                LinkedList<String> messages_to_deliver = new LinkedList<String>();
 //                //on regarde quelle machine a acquite les messages envoye par cette machine
 //                for (String s : c_messages_sent.keySet()) {

@@ -67,9 +67,8 @@ public class ServerManager implements Runnable {
 				else if (s.contains("ACK")) {
 					String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
 					String Ip_origine = socketClient.getInetAddress().toString();
-					System.out.println("ip + id : " + Ip_origine + " " + id_msg);
-					System.out.println(c_messages_received.toString());
-	            	System.out.println(c_messages_sent.toString());
+					Ip_origine = Ip_origine.replace("/", "");
+					
 					if (c_messages_received.containsKey(id_msg)) {
 						c_messages_received.get(id_msg).put(Ip_origine, true);
 					}
@@ -82,6 +81,7 @@ public class ServerManager implements Runnable {
 					String id_msg = s.substring(s.indexOf("/")+1, s.indexOf("/", s.indexOf("/")+1));
 					String msg = s.replace("/"+id_msg+"/", "");
 					String Ip_origine = socketClient.getInetAddress().toString();
+					Ip_origine = Ip_origine.replace("/", "");
 					ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
 					for (String ip : context.keySet()) {
 						if (Ip_origine.equals(ip))

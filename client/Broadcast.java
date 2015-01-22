@@ -45,7 +45,6 @@ public class Broadcast implements Runnable{
         try{
                 InputStream in;
                 OutputStream out;
-                System.out.println("Broadcast in process... de : " + message);
                 for(String s : list_adr.keySet()){
                     if("LocalHost".equals(s) || !list_adr.get(s))
                         continue;
@@ -67,7 +66,6 @@ public class Broadcast implements Runnable{
                     out = socket.getOutputStream();
                     in = socket.getInputStream();
                     out.write(b);
-                    //System.out.println(message);
                     socket.close();
                 }
                 
