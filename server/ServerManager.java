@@ -46,7 +46,7 @@ public class ServerManager implements Runnable {
 			DataInputStream in = new DataInputStream(
 					socketClient.getInputStream());
 
-			byte down_packet[] = new byte[2000000];
+			byte down_packet[] = new byte[150000];
 			int b_read = in.read(down_packet);
 			String s = new String(down_packet);
 			
@@ -74,11 +74,11 @@ public class ServerManager implements Runnable {
 				cont_connected.put(Ip_origine, true);
 			}// cas reception d'un message
 			else if (b_read != -1) {
-				/*b_read = in.read(down_packet);
+				b_read = in.read(down_packet);
 				while (b_read != -1) {
 					b_read = in.read(down_packet);
 					s += new String(down_packet);
-				}*/
+				}
 				//System.out.println("message longueur : " + s.length());
 				String id_msg = s.substring(s.indexOf("/") + 1,
 						s.indexOf("/", s.indexOf("/") + 1));

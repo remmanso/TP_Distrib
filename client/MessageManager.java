@@ -28,7 +28,7 @@ public class MessageManager implements Runnable {
 	@Override
 	public void run() {
 		int cpt = 1;
-		byte[] downpacket = new byte[10000];
+		byte[] downpacket = new byte[1000000];
 		new Random().nextBytes(downpacket);
 		String message = new String(downpacket);
 		while (true) {
@@ -39,7 +39,7 @@ public class MessageManager implements Runnable {
 			b.start();
 			try {
 				if (debit)
-					Thread.sleep(5000);
+					Thread.sleep(10);
 				else
 					Thread.sleep(500);
 			} catch (InterruptedException e) {

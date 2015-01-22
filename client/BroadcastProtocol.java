@@ -60,7 +60,7 @@ public class BroadcastProtocol {
 		}
 		new Thread(new Broadcast("Connected", context)).start();
 		while (cont_connected.contains(false)) {
-			Thread.sleep(100);
+			Thread.sleep(10);
 			new Thread(new Broadcast("Connected", context)).start();
 			if (context.contains(false)) {
 				for (String s : context.keySet()) {
@@ -73,7 +73,7 @@ public class BroadcastProtocol {
 		System.out.println("Connected");
 		b.start();
 		if (debit) {
-			new Thread(new CalculDebitMessage(counter_debit, 10000)).start();
+			new Thread(new CalculDebitMessage(counter_debit, 1000000)).start();
 		}
 
 		while (true) {

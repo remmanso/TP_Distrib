@@ -70,6 +70,7 @@ public class Broadcast implements Runnable {
 				out = socket.getOutputStream();
 				in = socket.getInputStream();
 				out.write(b);
+				// System.out.println("BROADCAST : " + message);
 				out.flush();
 				socket.close();
 			}
