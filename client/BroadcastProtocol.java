@@ -73,7 +73,7 @@ public class BroadcastProtocol {
 		System.out.println("Connected");
 		b.start();
 		if (debit) {
-			new Thread(new CalculDebitMessage(counter_debit, 1000000)).start();
+			new Thread(new CalculDebitMessage(counter_debit, 10000)).start();
 		}
 
 		while (true) {
@@ -115,7 +115,6 @@ public class BroadcastProtocol {
 					}
 				}
 			}
-
 			if (ok_delivery) {
 				messages_to_deliver.add(s);
 			}
