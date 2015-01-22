@@ -57,7 +57,6 @@ public class Broadcast implements Runnable {
                     String m = message + InetAddress.getLocalHost();
                     String original_message = message;
                     message = "/" + m.hashCode() + "/" + message;
-                    String id_msg = message.substring(m.indexOf("/") + 1, m.indexOf("/", m.indexOf("/") + 1));
                     ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
 
                     for (String ip : list_adr.keySet()) {

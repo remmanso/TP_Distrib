@@ -15,9 +15,12 @@ public class BroadcastProtocol {
         }
 
         ConcurrentHashMap<String, Boolean> context = new ConcurrentHashMap<String, Boolean>();
-
+        String[] addresses = new String[args.length];
+        int i = 0;
         for (String arg : args) {
-            context.put(arg, false);
+            addresses[i] = InetAddress.getByName(arg).getHostAddress();
+            context.put(addresses[i], false);
+            i++;
         }
 
         ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent
@@ -31,7 +34,7 @@ public class BroadcastProtocol {
         ConcurrentHashMap<String, String> messages_sent
                 = new ConcurrentHashMap<String, String>();
 
-        Thread t = new Thread(new FaultDetector(args, context, 2009));
+        Thread t = new Thread(new FaultDetector(addresses, context, 2009));
         t.start();
 
         Thread c2010 = new Thread(new Listener(2010, c_messages_sent, c_messages_received,
@@ -43,7 +46,6 @@ public class BroadcastProtocol {
         while (context.contains(false)) {
             Thread.sleep(10);
         }
-
         b.start();
 
         while (true) {
@@ -64,7 +66,7 @@ public class BroadcastProtocol {
         //on regarde quelle machine a acquite les messages envoye par cette machine
         for (String s : context_msg_hash.keySet()) {
             boolean ok_delivery = true;
-                    //pour chaque message on parcourt les machines en reseau pour savoir lesquelles ont repondu
+            //pour chaque message on parcourt les machines en reseau pour savoir lesquelles ont repondu
             //si elles n'ont pas repondu on regarde si elles sont en vies.
             for (String s1 : context_msg_hash.get(s).keySet()) {
                 if (!context_msg_hash.get(s).get(s1)) {
