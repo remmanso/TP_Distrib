@@ -17,6 +17,7 @@ public class TimerPing extends TimerTask {
     private ConcurrentHashMap<String, Boolean> context;
     private Socket socket;
 
+
     public TimerPing(String ad, int port) {
         addresse = ad;
         this.port = port;

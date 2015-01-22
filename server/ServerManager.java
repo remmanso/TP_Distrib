@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerManager implements Runnable {
 
+
     private Socket socketClient;
     private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent
             = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
@@ -38,11 +39,15 @@ public class ServerManager implements Runnable {
         this.context = context;
     }
 
-    @Override
-    public void run() {
-        try {
-            DataOutputStream out = new DataOutputStream(socketClient.getOutputStream());
-            DataInputStream in = new DataInputStream(socketClient.getInputStream());;
+	@Override
+	public void run() {
+		try {
+			DataOutputStream out = new DataOutputStream(
+					socketClient.getOutputStream());
+			DataInputStream in = new DataInputStream(
+					socketClient.getInputStream());
+			;
+
 
             while (true) {
                 byte down_packet[] = new byte[65000];
