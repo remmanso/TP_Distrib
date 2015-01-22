@@ -64,7 +64,7 @@ public class Broadcast implements Runnable {
                     continue;
                 }
                 Socket socket = new Socket(s, 2010);
-                //System.out.println("BROADCAST : " + message);
+				// System.out.println("BROADCAST : " + message);
                 byte b[] = message.getBytes();
                 out = socket.getOutputStream();
                 in = socket.getInputStream();

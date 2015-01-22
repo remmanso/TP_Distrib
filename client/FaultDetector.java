@@ -33,7 +33,7 @@ public class FaultDetector implements Runnable {
 
         try {
             socketserver = new ServerSocket(port);
-            System.out.println("Le serveur est à l'écoute du port " + socketserver.getLocalPort());
+			System.out.println("Le serveur est à l'écoute du port " + socketserver.getLocalPort());
             while (true) {
                 socketduserveur = socketserver.accept();
 
