@@ -60,7 +60,7 @@ public class ServerManager implements Runnable {
                     out.flush();
                 } //cas de reception d'un acquitement
                 else if (s.contains("ACK")) {
-                	System.out.println("debug : msg recu : " + s);
+                	System.out.println("ACK : " + s);
                     String id_msg = s.substring(s.indexOf("/") + 1, s.indexOf("/", s.indexOf("/") + 1));
                     String Ip_origine = socketClient.getInetAddress().getHostAddress().toString();
                     Ip_origine = Ip_origine.replace("/", "");
@@ -74,7 +74,7 @@ public class ServerManager implements Runnable {
                     System.out.println("message envoyé " +c_messages_sent.toString());
                 } //cas reception d'un message
                 else if (b_read != - 1) {
-                	System.out.println("debug : msg recu : " + s);
+                	System.out.println("MSG : " + s);
                     String id_msg = s.substring(s.indexOf("/") + 1, s.indexOf("/", s.indexOf("/") + 1));
                     String msg = s.replace("/" + id_msg + "/", "");
                     String Ip_origine = socketClient.getInetAddress().getHostAddress().toString();

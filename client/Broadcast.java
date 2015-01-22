@@ -46,28 +46,27 @@ public class Broadcast implements Runnable {
         try {
             InputStream in;
             OutputStream out;
+            if (!message.contains("ACK") && !message.isEmpty()) {
+                String m = message + InetAddress.getLocalHost().getHostAddress();
+                String original_message = message;
+                message = "/" + m.hashCode() + "/" + message;
+                ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
+
+                for (String ip : list_adr.keySet()) {
+                    context_message.put(ip, false);
+                }
+                c_messages_sent.put(Integer.toString(m.hashCode()), context_message);
+                messages_sent.put(Integer.toString(m.hashCode()), original_message);
+            }
+            
             for (String s : list_adr.keySet()) {
             	if (!list_adr.get(s))
             		continue;
                 if ("LocalHost".equals(s) || !list_adr.get(s)) {
                     continue;
                 }
-
                 Socket socket = new Socket(s, 2010);
-
-                if (!message.contains("ACK") && !message.isEmpty()) {
-                    String m = message + InetAddress.getLocalHost().getHostAddress();
-                    String original_message = message;
-                    message = "/" + m.hashCode() + "/" + message;
-                    ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
-
-                    for (String ip : list_adr.keySet()) {
-                        context_message.put(ip, false);
-                    }
-                    c_messages_sent.put(Integer.toString(m.hashCode()), context_message);
-                    messages_sent.put(Integer.toString(m.hashCode()), original_message);
-                }
-
+                System.out.println("BROADCAST : " + message);
                 byte b[] = message.getBytes();
                 out = socket.getOutputStream();
                 in = socket.getInputStream();
