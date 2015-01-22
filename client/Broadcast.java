@@ -47,6 +47,8 @@ public class Broadcast implements Runnable {
             InputStream in;
             OutputStream out;
             for (String s : list_adr.keySet()) {
+            	if (!list_adr.get(s))
+            		continue;
                 if ("LocalHost".equals(s) || !list_adr.get(s)) {
                     continue;
                 }
@@ -54,7 +56,7 @@ public class Broadcast implements Runnable {
                 Socket socket = new Socket(s, 2010);
 
                 if (!message.contains("ACK") && !message.isEmpty()) {
-                    String m = message + InetAddress.getLocalHost();
+                    String m = message + InetAddress.getLocalHost().getHostAddress();
                     String original_message = message;
                     message = "/" + m.hashCode() + "/" + message;
                     ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();

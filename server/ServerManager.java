@@ -60,8 +60,9 @@ public class ServerManager implements Runnable {
                     out.flush();
                 } //cas de reception d'un acquitement
                 else if (s.contains("ACK")) {
+                	System.out.println("debug : msg recu : " + s);
                     String id_msg = s.substring(s.indexOf("/") + 1, s.indexOf("/", s.indexOf("/") + 1));
-                    String Ip_origine = socketClient.getInetAddress().toString();
+                    String Ip_origine = socketClient.getInetAddress().getHostAddress().toString();
                     Ip_origine = Ip_origine.replace("/", "");
                     if (c_messages_received.containsKey(id_msg)) {
                         c_messages_received.get(id_msg).put(Ip_origine, true);
@@ -69,11 +70,14 @@ public class ServerManager implements Runnable {
                     if (c_messages_sent.containsKey(id_msg)) {
                         c_messages_sent.get(id_msg).put(Ip_origine, true);
                     }
+                    System.out.println("message recu : " + c_messages_received.toString());
+                    System.out.println("message envoyé " +c_messages_sent.toString());
                 } //cas reception d'un message
                 else if (b_read != - 1) {
+                	System.out.println("debug : msg recu : " + s);
                     String id_msg = s.substring(s.indexOf("/") + 1, s.indexOf("/", s.indexOf("/") + 1));
                     String msg = s.replace("/" + id_msg + "/", "");
-                    String Ip_origine = socketClient.getInetAddress().toString();
+                    String Ip_origine = socketClient.getInetAddress().getHostAddress().toString();
                     Ip_origine = Ip_origine.replace("/", "");
                     ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
                     for (String ip : context.keySet()) {
@@ -85,6 +89,7 @@ public class ServerManager implements Runnable {
                     }
                     c_messages_received.put(id_msg, context_message);
                     messages_received.put(id_msg, msg);
+                    System.out.println("id qui va être envoyé en ack : " + id_msg);
                     Thread b = new Thread(new Broadcast("/" + id_msg + "/" + "ACK", context));
                     b.start();
                 }
