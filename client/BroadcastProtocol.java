@@ -44,7 +44,7 @@ public class BroadcastProtocol {
         Thread b = new Thread(new MessageManager(context, c_messages_sent, messages_sent));
 
         while (context.contains(false)) {
-            Thread.sleep(10);
+            Thread.sleep(100);
         }
         b.start();
 

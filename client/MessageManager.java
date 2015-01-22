@@ -23,7 +23,7 @@ public class MessageManager implements Runnable {
     public void run() {
         int cpt = 1;
         String message = "";
-        while (true) {
+        //while (cpt == 1) {
             try {
                 message = "Hello n°" + cpt + " from " + InetAddress.getLocalHost();
             } catch (UnknownHostException e) {
@@ -37,7 +37,7 @@ public class MessageManager implements Runnable {
                 e.printStackTrace();
             }
             cpt++;
-        }
+        //}
 
     }
 

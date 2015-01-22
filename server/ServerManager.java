@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerManager implements Runnable {
 
-
     private Socket socketClient;
     private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent
             = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
@@ -39,15 +38,13 @@ public class ServerManager implements Runnable {
         this.context = context;
     }
 
-	@Override
-	public void run() {
-		try {
-			DataOutputStream out = new DataOutputStream(
-					socketClient.getOutputStream());
-			DataInputStream in = new DataInputStream(
-					socketClient.getInputStream());
-			;
-
+    @Override
+    public void run() {
+        try {
+            DataOutputStream out = new DataOutputStream(
+                    socketClient.getOutputStream());
+            DataInputStream in = new DataInputStream(
+                    socketClient.getInputStream());
 
             while (true) {
                 byte down_packet[] = new byte[65000];
@@ -61,8 +58,11 @@ public class ServerManager implements Runnable {
                 } //cas de reception d'un acquitement
                 else if (s.contains("ACK")) {
                     String id_msg = s.substring(s.indexOf("/") + 1, s.indexOf("/", s.indexOf("/") + 1));
+                    
                     String Ip_origine = socketClient.getInetAddress().toString();
+                    System.out.println("ACK1: " + id_msg + "Ip_origine: " + Ip_origine);
                     Ip_origine = Ip_origine.replace("/", "");
+                    System.out.println("ACK1: " + id_msg + "Ip_origine: " + Ip_origine);
                     if (c_messages_received.containsKey(id_msg)) {
                         c_messages_received.get(id_msg).put(Ip_origine, true);
                     }
@@ -85,6 +85,7 @@ public class ServerManager implements Runnable {
                     }
                     c_messages_received.put(id_msg, context_message);
                     messages_received.put(id_msg, msg);
+                    System.out.println("ServerManager: " + c_messages_received );
                     Thread b = new Thread(new Broadcast("/" + id_msg + "/" + "ACK", context));
                     b.start();
                 }

@@ -62,6 +62,7 @@ public class Broadcast implements Runnable {
                     for (String ip : list_adr.keySet()) {
                         context_message.put(ip, false);
                     }
+                    System.out.println("Broadcast : " + Integer.toString(m.hashCode()));
                     c_messages_sent.put(Integer.toString(m.hashCode()), context_message);
                     messages_sent.put(Integer.toString(m.hashCode()), original_message);
                 }
