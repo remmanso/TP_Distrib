@@ -58,13 +58,13 @@ public class Broadcast implements Runnable {
                 c_messages_sent.put(Integer.toString(m.hashCode()), context_message);
                 messages_sent.put(Integer.toString(m.hashCode()), original_message);
             }
-            System.out.println(list_adr.toString());
+            //System.out.println(list_adr.toString());
             for (String s : list_adr.keySet()) {
                 if ("LocalHost".equals(s)) {
                     continue;
                 }
                 Socket socket = new Socket(s, 2010);
-                System.out.println("BROADCAST : " + message);
+				// System.out.println("BROADCAST : " + message);
                 byte b[] = message.getBytes();
                 out = socket.getOutputStream();
                 in = socket.getInputStream();
