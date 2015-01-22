@@ -17,9 +17,9 @@ public class BroadcastProtocol {
         ConcurrentHashMap<String, Boolean> context = new ConcurrentHashMap<String, Boolean>();
 
         for (String arg : args) {
-            context.put(arg, false);
+        	        		
         }
-
+        
         ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent
                 = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
         ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received
