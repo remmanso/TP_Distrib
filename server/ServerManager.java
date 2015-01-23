@@ -44,10 +44,11 @@ public class ServerManager implements Runnable {
     @Override
     public void run() {
         try {
+            System.out.println("INSIDE SERVER MANAGER");
             while (true) {
-                while(sockets.isEmpty()){
-                    
-                }
+                /*while (sockets.isEmpty()) {
+                }*/
+                System.out.println("AFTER WAIT" + sockets.size());
                 for (Socket socketClient : sockets) {
                     DataOutputStream out = new DataOutputStream(
                             socketClient.getOutputStream());
@@ -58,12 +59,13 @@ public class ServerManager implements Runnable {
                     String s = new String(down_packet);
                     // cas reception d'un ping
                     if (s.contains("ping")) {
+                        System.out.println("Message lu: " + s.length());
                         byte data_out[] = s.getBytes();
                         out.write(data_out);
                         out.flush();
                     } // cas de reception d'un acquitement
                     else if (s.contains("ACK")) {
-                        System.out.println("Message lu: "+ s.length());
+                        System.out.println("Message lu: " + s.length());
                         String id_msg = s.substring(s.indexOf("/") + 1,
                                 s.indexOf("/", s.indexOf("/") + 1));
                         String Ip_origine = socketClient.getInetAddress()
@@ -76,17 +78,18 @@ public class ServerManager implements Runnable {
                             c_messages_sent.get(id_msg).put(Ip_origine, true);
                         }
                     } else if (s.contains("Connected")) {
+                        System.out.println("Message lu: " + s.length());
                         String Ip_origine = socketClient.getInetAddress()
                                 .getHostAddress().toString();
                         cont_connected.put(Ip_origine, true);
                     }// cas reception d'un message
                     else if (b_read != -1) {
                         //b_read = in.read(down_packet);
-                        System.out.println("Message lu: "+ s.length());
+                        System.out.println("Message lu: " + s.length());
                         /*while (b_read != -1) {
-                            b_read = in.read(down_packet);
-                            s += new String(down_packet);
-                        }*/
+                         b_read = in.read(down_packet);
+                         s += new String(down_packet);
+                         }*/
                         //System.out.println("message longueur : " + s.length());
                         String id_msg = s.substring(s.indexOf("/") + 1,
                                 s.indexOf("/", s.indexOf("/") + 1));
@@ -111,7 +114,8 @@ public class ServerManager implements Runnable {
                 }
             }
         } catch (SocketException e) {
-            new Thread(new ServerManager(sockets)).start();
+            //new Thread(new ServerManager(sockets)).start();
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -36,11 +36,8 @@ public class FaultDetector implements Runnable {
             ConcurrentLinkedQueue<Socket> sockets = new ConcurrentLinkedQueue<Socket>();
 			System.out.println("Le serveur est à l'écoute du port " + socketserver.getLocalPort());
 			new Thread(new ServerManager(sockets)).start();
-			new Thread(new ServerManager(sockets)).start();
-			new Thread(new ServerManager(sockets)).start();
             while (true) {
-            	sockets.add(socketserver.accept());
-                
+            	sockets.add(socketserver.accept());   
             }
         } catch (IOException e) {
             e.printStackTrace();

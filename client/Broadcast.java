@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author mansourr
  */
-public class Broadcast implements Runnable {
+public class Broadcast {
 
 	private String message;
 	private ConcurrentHashMap<String, Boolean> list_adr;
@@ -33,7 +33,7 @@ public class Broadcast implements Runnable {
 			ConcurrentHashMap<String, Boolean> list_adr,
 			ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent,
 			ConcurrentHashMap<String, String> messages_sent) {
-		super();
+		//super();
 		this.message = message;
 		this.list_adr = list_adr;
 		this.c_messages_sent = c_messages_sent;
@@ -45,7 +45,7 @@ public class Broadcast implements Runnable {
 		this.list_adr = list_adr;
 	}
 
-	@Override
+	
 	public void run() {
 		try {
 			DataInputStream in;
