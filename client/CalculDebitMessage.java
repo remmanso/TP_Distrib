@@ -16,6 +16,7 @@ public class CalculDebitMessage implements Runnable {
 	public void run() {
 		long time = System.nanoTime() / 1000;
 		long time_ref = 5000000;
+                System.out.println("size_msg: " + size_msg);
 		while (true) {
 			if (System.nanoTime() / 1000 - time >= time_ref) {
 				System.out.println("debit :  " + counter_debit.get() * size_msg
