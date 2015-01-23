@@ -1,5 +1,7 @@
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -46,10 +48,8 @@ public class Broadcast implements Runnable {
 	@Override
 	public void run() {
 		try {
-			//InputStream in;
-			//OutputStream out;
-			BufferedOutputStream out;
-			BufferedInputStream in;
+			DataInputStream in;
+			DataOutputStream out;
 			if (!message.contains("ACK") && !message.isEmpty()) {
 				String m = message
 						+ InetAddress.getLocalHost().getHostAddress();
@@ -71,8 +71,8 @@ public class Broadcast implements Runnable {
 				}
 				Socket socket = new Socket(s, 2010);
 				byte b[] = message.getBytes();
-				out = new BufferedOutputStream(socket.getOutputStream());
-				in = new BufferedInputStream(socket.getInputStream());
+				out = new DataOutputStream(socket.getOutputStream());
+				in = new DataInputStream(socket.getInputStream());
 				out.write(b);
 				// System.out.println("BROADCAST : " + message);
 				out.flush();

@@ -36,15 +36,16 @@ public class MessageManager implements Runnable {
 				message = messageDefinition(cpt);
 			Thread b = new Thread(new Broadcast(message, context,
 					c_messages_sent, messages_sent));
-			b.start();
-			try {
+			b.run();
+			
+			/*try {
 				if (debit)
 					Thread.sleep(10);
 				else
 					Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			}
+			}*/
 			cpt++;
 		}
 	}

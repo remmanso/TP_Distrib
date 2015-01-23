@@ -43,17 +43,13 @@ public class ServerManager implements Runnable {
 	@Override
 	public void run() {
 		try {
-			/*DataOutputStream out = new DataOutputStream(
+			DataOutputStream out = new DataOutputStream(
 					socketClient.getOutputStream());
 			DataInputStream in = new DataInputStream(
-					socketClient.getInputStream());*/
-			BufferedInputStream in = new BufferedInputStream(socketClient.getInputStream());
-			BufferedOutputStream out = new BufferedOutputStream(socketClient.getOutputStream());
-
+					socketClient.getInputStream());
 			byte down_packet[] = new byte[150000];
 			int b_read = in.read(down_packet);
 			String s = new String(down_packet);
-			
 			// cas reception d'un ping
 			if (s.contains("ping")) {
 				byte data_out[] = s.getBytes();
