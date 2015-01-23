@@ -13,61 +13,72 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TimerPing extends TimerTask {
 
-	private String addresse;
-	private int port;
-	private ConcurrentHashMap<String, Boolean> context;
-	private Socket socket;
+    private String addresse;
+    private int port;
+    private ConcurrentHashMap<String, Boolean> context;
+    private Socket socket;
 
-	public TimerPing(String ad, int port) {
-		addresse = ad;
-		this.port = port;
-	}
+    public TimerPing(String ad, int port) {
+        this.addresse = ad;
+        this.port = port;
+    }
 
-	public TimerPing(String ad, int port,
-			ConcurrentHashMap<String, Boolean> context) {
-		addresse = ad;
-		this.port = port;
-		this.context = context;
-	}
+    public TimerPing(String ad, int port,
+            ConcurrentHashMap<String, Boolean> context) {
+        this.addresse = ad;
+        this.port = port;
+        this.context = context;
+    }
 
-	public void run() {
-		try {
-			DataInputStream in;
-			DataOutputStream out;
-			long time;
-			int b_read = 0;
-			byte b[] = "000102030405060708091011121314151617181920212223242526272829"
-					.getBytes();
-			String s = new String(b);
-			s = "ping".concat(s);
-			b = s.getBytes();
+    public void run() {
+        try {
+            
+            DataInputStream in;
+            DataOutputStream out;
+            long time;
+            int b_read = 0;
+            byte b[] = new byte[60];
+            //byte b[] = "000102030405060708091011121314151617181920212223242526272829"
+                    //.getBytes();
+            String s = new String(b);
+            s = "ping".concat(s);
+            b = s.getBytes();
 
-			socket = new Socket(this.addresse, port);
-			socket.setSoTimeout(1000);
+            socket = new Socket(this.addresse, port);
+            socket.setSoTimeout(1000);
 
-			time = System.nanoTime();
-			out = new DataOutputStream(socket.getOutputStream());
-			in = new DataInputStream(socket.getInputStream());
-			out.write(b);
-			b_read = in.read(b);
+            out = new DataOutputStream(socket.getOutputStream());
+            in = new DataInputStream(socket.getInputStream());
 
-			time = System.nanoTime() - time;
-			double time_ms = (double) time / 1000000.0;
-			context.put(addresse, true);
-			socket.close();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (ConnectException e) {
-			context.put(addresse, false);
-		} catch (SocketTimeoutException e) {
-			context.put(addresse, false);
-		} catch (SocketException e) {
-			context.put(addresse, false);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+            out.write(b);
+
+            time = System.nanoTime();
+            b_read = in.read(b);
+
+            time = System.nanoTime() - time;
+            //double time_ms = (double) time / 1000000.0;
+
+            context.put(addresse, true);
+            socket.close();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (ConnectException e) {
+            context.put(addresse, false);
+            //e.printStackTrace();
+        } catch (SocketTimeoutException e) {
+            context.put(addresse, false);
+            //e.printStackTrace();
+        } catch (SocketException e) {
+            context.put(addresse, false);
+            System.out.println("La connexion avec " + socket.getInetAddress().getHostName() +" a été coupée.");
+            //e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

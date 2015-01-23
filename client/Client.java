@@ -9,9 +9,9 @@ public class Client {
 		}
 
 		if (args[1].equals("1")){
-			TimerPing t_ping = new TimerPing(args[0], 2009);
+			//TimerPing t_ping = new TimerPing(args[0], 2009);
 			Timer timer = new Timer();
-			timer.scheduleAtFixedRate(t_ping, 0, 1000);
+			//timer.scheduleAtFixedRate(t_ping, 0, 1000);
 		}
 		else if (args[1].equals("2")){
 			Netperf t_netperf = new Netperf(args[0]);

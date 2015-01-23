@@ -7,7 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class BroadcastProtocol {
-
+    
     public static void main(String[] args) throws IOException,
             InterruptedException {
 
@@ -18,6 +18,7 @@ public class BroadcastProtocol {
 
         if (!args[args.length - 1].equals("1") && !args[args.length - 1].equals("0")) {
             System.out.println("Veuillez insérer 1 pour calculer le débit 0 sinon en fin d'argument");
+            return;
         }
 
         boolean debit = args[args.length - 1].equals("1");
@@ -45,7 +46,7 @@ public class BroadcastProtocol {
 
         ConcurrentHashMap<String, String> messages_sent = new ConcurrentHashMap<String, String>();
 
-        Thread t = new Thread(new FaultDetector(addresses, context, 2009));
+        Thread t = new Thread(new FaultDetector(addresses, context, cont_connected, 2009));
         t.start();
 
         Thread c2010 = new Thread(new Listener(2010, c_messages_sent,
@@ -62,7 +63,7 @@ public class BroadcastProtocol {
         Broadcast broad = new Broadcast("Connected", context);
         broad.run();
         while (cont_connected.contains(false)) {
-            Thread.sleep(10);
+            Thread.sleep(100);
             broad.run();
             if (context.contains(false)) {
                 for (String s : context.keySet()) {
@@ -102,11 +103,11 @@ public class BroadcastProtocol {
             boolean debit) {
 
         LinkedList<String> messages_to_deliver = new LinkedList<String>();
-		// on regarde quelle machine a acquite les messages envoye par cette
+        // on regarde quelle machine a acquite les messages envoye par cette
         // machine
         for (String s : context_msg_hash.keySet()) {
             boolean ok_delivery = true;
-			// pour chaque message on parcourt les machines en reseau pour
+            // pour chaque message on parcourt les machines en reseau pour
             // savoir lesquelles ont repondu
             // si elles n'ont pas repondu on regarde si elles sont en vies.
             for (String s1 : context_msg_hash.get(s).keySet()) {

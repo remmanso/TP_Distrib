@@ -43,15 +43,24 @@ public class MessageManager implements Runnable {
 
             try {
                 if (!debit) {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                 }
-                //else
-                //	Thread.sleep(500);
+                /*else
+                    Thread.sleep(1000);
+                        */
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             cpt++;
+        }/*
+        String message;
+        byte[] downpacket;
+        if (!debit){
+            byte[] downpacket
         }
+        else{
+            
+        }*/
     }
 
     private String messageDefinition(int cpt) {
