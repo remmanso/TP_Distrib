@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -55,12 +56,15 @@ public class Listener implements Runnable {
 
     public void run() {
         try {
-            ServerSocket socketserver = new ServerSocket(port);
+            ServerSocket socketserver= new ServerSocket(port);
+            ConcurrentLinkedQueue<Socket> sockets = new ConcurrentLinkedQueue<Socket>();
+			System.out.println("Le serveur est à l'écoute du port " + socketserver.getLocalPort());
+			new Thread(new ServerManager(sockets)).start();
+			new Thread(new ServerManager(sockets)).start();
+			new Thread(new ServerManager(sockets)).start();
             while (true) {
-                Socket socketduserveur = socketserver.accept();
-                Thread t = new Thread(new ServerManager(socketduserveur, c_messages_sent, c_messages_received,
-                        messages_received, messages_sent, context, cont_connected));
-                t.start();
+            	sockets.add(socketserver.accept());
+                
             }
             //socketserver.close();
         } catch (IOException ex) {

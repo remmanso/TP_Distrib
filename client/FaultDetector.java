@@ -3,6 +3,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -29,16 +30,17 @@ public class FaultDetector implements Runnable {
         }
 
         ServerSocket socketserver;
-        Socket socketduserveur;
 
         try {
             socketserver = new ServerSocket(port);
+            ConcurrentLinkedQueue<Socket> sockets = new ConcurrentLinkedQueue<Socket>();
 			System.out.println("Le serveur est à l'écoute du port " + socketserver.getLocalPort());
+			new Thread(new ServerManager(sockets)).start();
+			new Thread(new ServerManager(sockets)).start();
+			new Thread(new ServerManager(sockets)).start();
             while (true) {
-                socketduserveur = socketserver.accept();
-
-                Thread t = new Thread(new ServerManager(socketduserveur));
-                t.start();
+            	sockets.add(socketserver.accept());
+                
             }
         } catch (IOException e) {
             e.printStackTrace();
