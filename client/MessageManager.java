@@ -38,14 +38,14 @@ public class MessageManager implements Runnable {
 					c_messages_sent, messages_sent));
 			b.run();
 			
-			/*try {
-				if (debit)
-					Thread.sleep(10);
-				else
-					Thread.sleep(500);
+			try {
+				if (!debit)
+					Thread.sleep(1000);
+				//else
+				//	Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			}*/
+			}
 			cpt++;
 		}
 	}
