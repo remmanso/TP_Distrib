@@ -31,11 +31,14 @@ public class MessageManager implements Runnable {
 		byte[] downpacket = new byte[1000000];
 		new Random().nextBytes(downpacket);
 		String message = new String(downpacket);
+		Broadcast b =  new Broadcast(message, context,
+				c_messages_sent, messages_sent);
 		while (true) {
-			if (!debit)
+			if (!debit) {
 				message = messageDefinition(cpt);
-			Thread b = new Thread(new Broadcast(message, context,
-					c_messages_sent, messages_sent));
+				b.setMessage(message);
+			}
+			
 			b.run();
 			
 			try {
