@@ -86,4 +86,12 @@ public class Broadcast implements Runnable {
 			e.printStackTrace();
 		}
 	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
 }
