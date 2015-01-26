@@ -86,11 +86,12 @@ public class BroadcastProtocol {
 
     }
 
-    public static void deliver(String s, boolean sent, DeliveredCounter counter_debit, boolean debit) {
+    public static void deliver(String s, boolean sent, DeliveredCounter counter_debit, boolean debit, ConcurrentHashMap<String, Boolean> context) {
         if (!debit) {
             System.out.println("Message délivré: " + s);
         } else {
-            counter_debit.inc();
+            if(context.containsValue(true))
+                counter_debit.inc();
         }
     }
 
@@ -101,7 +102,6 @@ public class BroadcastProtocol {
             boolean sent,
             DeliveredCounter counter_debit,
             boolean debit) {
-
         LinkedList<String> messages_to_deliver = new LinkedList<String>();
         // on regarde quelle machine a acquite les messages envoye par cette
         // machine
@@ -124,7 +124,7 @@ public class BroadcastProtocol {
         }
         for (String s : messages_to_deliver) {
             context_msg_hash.remove(s);
-            deliver(message_hash.get(s), sent, counter_debit, debit);
+            deliver(message_hash.get(s), sent, counter_debit, debit, context);
             message_hash.remove(s);
         }
     }

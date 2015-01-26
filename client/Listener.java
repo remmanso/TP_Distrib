@@ -61,6 +61,7 @@ public class Listener implements Runnable {
             //System.out.println("Le serveur est à l'écoute du port " + socketserver.getLocalPort());
             //System.out.println(sockets);
             new Thread(new ServerManager(sockets, c_messages_sent, c_messages_received, messages_received, messages_sent, context, cont_connected)).start();
+            new Thread(new ServerManager(sockets, c_messages_sent, c_messages_received, messages_received, messages_sent, context, cont_connected)).start();
             //long cpt = 0;
             while (true) {
                 sockets.add(socketserver.accept());

@@ -15,7 +15,7 @@ public class FaultDetector implements Runnable {
     private ConcurrentHashMap<String, Boolean> context;
     private ConcurrentHashMap<String, Boolean> cont_connected;
     private int port;
-
+    
     public FaultDetector(String args[], ConcurrentHashMap<String, Boolean> context, ConcurrentHashMap<String, Boolean> cont_connect, int port) {
         this.args = args;
         this.context = context;

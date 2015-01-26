@@ -22,7 +22,6 @@ public class TimerPing extends TimerTask {
     private int port;
     private ConcurrentHashMap<String, Boolean> context;
     private Socket socket;
-
     public TimerPing(String ad, int port) {
         this.addresse = ad;
         this.port = port;
@@ -42,26 +41,21 @@ public class TimerPing extends TimerTask {
             DataOutputStream out;
             long time;
             int b_read = 0;
+            
+            time = System.nanoTime();
             byte b[] = new byte[60];
-            //byte b[] = "000102030405060708091011121314151617181920212223242526272829"
-                    //.getBytes();
             String s = new String(b);
             s = "ping".concat(s);
             b = s.getBytes();
-
+                    
             socket = new Socket(this.addresse, port);
             socket.setSoTimeout(1000);
 
             out = new DataOutputStream(socket.getOutputStream());
             in = new DataInputStream(socket.getInputStream());
-
             out.write(b);
 
-            time = System.nanoTime();
             b_read = in.read(b);
-
-            time = System.nanoTime() - time;
-            //double time_ms = (double) time / 1000000.0;
 
             context.put(addresse, true);
             socket.close();

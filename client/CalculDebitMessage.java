@@ -15,14 +15,14 @@ public class CalculDebitMessage implements Runnable {
     @Override
     public void run() {
         long time_start = System.nanoTime();
-        long time = System.nanoTime()/1000;
-        long time_ref = 1000000;
+        long time = System.nanoTime();
+        long time_ref = 2000000;
         //System.out.println("size_msg: " + size_msg);
         while (true) {
-            if (System.nanoTime() / 1000 - time >= time_ref) {
-                System.out.println("debit :  " + (double)(counter_debit.get()*8 
-                        *Math.pow(10,9)/(System.nanoTime() - time_start)) + " Mb/s");
-                time = System.nanoTime() / 1000;
+            if (System.nanoTime() - time >= time_ref*1000) {
+                System.out.printf("debit :  %.2f Mb/s \n",(double)(counter_debit.get()*8 
+                        *Math.pow(10,9)/(System.nanoTime() - time_start)));
+                time = System.nanoTime();
                 //counter_debit.reset();
             }
         }

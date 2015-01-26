@@ -11,7 +11,7 @@ public class MessageManager implements Runnable {
     private ConcurrentHashMap<String, String> messages_sent;
     private DeliveredCounter counter_debit;
     private boolean debit;
-
+            
     public MessageManager(
             ConcurrentHashMap<String, Boolean> context,
             ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent,
@@ -33,7 +33,7 @@ public class MessageManager implements Runnable {
         String message = new String(downpacket);
         Broadcast b = new Broadcast(message, context,
                 c_messages_sent, messages_sent);
-        while (true) {
+        while (!debit || context.contains(true)) {
             if (!debit) {
                 message = messageDefinition(cpt);
                 b.setMessage(message);
@@ -52,15 +52,7 @@ public class MessageManager implements Runnable {
                 e.printStackTrace();
             }
             cpt++;
-        }/*
-        String message;
-        byte[] downpacket;
-        if (!debit){
-            byte[] downpacket
         }
-        else{
-            
-        }*/
     }
 
     private String messageDefinition(int cpt) {
@@ -69,7 +61,6 @@ public class MessageManager implements Runnable {
             String s = "Hello n°" + cpt + " from " + InetAddress.getLocalHost();
             return s;
         } catch (UnknownHostException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return "";
