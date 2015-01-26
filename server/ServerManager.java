@@ -54,7 +54,7 @@ public class ServerManager implements Runnable {
             long time_start = System.nanoTime();
 //            long time_moy;
             
-            byte down_packet[] = new byte[cont_connected.size() * 10000 + 1000000];
+            byte down_packet[] = new byte[20];
             while (true) {
                 //cpt_run++;
                 while ((socketClient = sockets.poll()) == null) {
@@ -81,7 +81,7 @@ public class ServerManager implements Runnable {
                     System.out.println("ACK ? or CONNECTED ?" + s.contains("ACK") + "," + s.contains("Connected") + ". taille packet : " + s.length());
                 }*/
                 // cas reception d'un ping
-                System.out.println("length() " + s.length());
+                //System.out.println("length() " + s.length());
                 long time = System.nanoTime();
                 if (s.contains("ping")) {
                     time = System.nanoTime() - time;
@@ -113,6 +113,7 @@ public class ServerManager implements Runnable {
                     cont_connected.put(Ip_origine, true);
                 }// cas reception d'un message
                 else if (b_read != -1) {
+                    down_packet = new byte[1005000];
                     int cpt = 0;
                     //long time_max = System.nanoTime();
                     //long cpt = 0;
@@ -123,7 +124,7 @@ public class ServerManager implements Runnable {
                     if (s.length() < 200){
                         System.out.println(s);
                     }
-                     System.out.println(cpt + " iteration sur la while b_read");
+                    // System.out.println(cpt + " iteration sur la while b_read");
                     //long time_bread = System.nanoTime() - time_max;
                     
                     //time_all = System.nanoTime();
@@ -164,7 +165,7 @@ public class ServerManager implements Runnable {
                 socketClient.close();
                 long time_since_start = System.nanoTime() - time_start;
                 //time_moy = time_since_start/cpt_run;
-                System.out.println("temps moyen : "+ time_since_start);
+                //System.out.println("temps moyen : "+ time_since_start);
             }
         } catch (SocketException e) {
             //new Thread(new ServerManager(sockets, cont_connected)).start();
