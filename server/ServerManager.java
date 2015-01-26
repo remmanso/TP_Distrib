@@ -52,6 +52,9 @@ public class ServerManager implements Runnable {
             Socket socketClient;
 //            long cpt_run = 0;
             long time_start = System.nanoTime();
+            int b_read;
+            DataOutputStream out;
+            DataInputStream in;
 //            long time_moy;
             
             byte down_packet[] = new byte[cont_connected.size() * 10000 + 1000000];
@@ -65,13 +68,13 @@ public class ServerManager implements Runnable {
                     }
                 }
                 //long time_all = System.nanoTime();
-                DataOutputStream out = new DataOutputStream(
+                 out = new DataOutputStream(
                         socketClient.getOutputStream());
-                DataInputStream in = new DataInputStream(
+                 in = new DataInputStream(
                         socketClient.getInputStream());
                // System.out.println(cont_connected.size());
                 
-                int b_read = in.read(down_packet);
+                b_read = in.read(down_packet);
                 String s = new String(down_packet);
                 /*
                 if (!s.contains("ping"))
@@ -84,84 +87,85 @@ public class ServerManager implements Runnable {
                 System.out.println("length() " + s.length());
                 long time = System.nanoTime();
                 if (s.contains("ping")) {
-                    time = System.nanoTime() - time;
-                    System.out.println("temps pour contains " + time);
-                    byte data_out[] = new byte[64];
-                    out.write(data_out);
+//                    time = System.nanoTime() - time;
+//                    System.out.println("temps pour contains " + time);
+//                    byte data_out[] = new byte[64];
+//                    out.write(data_out);
+                    new Thread(new Ping(socketClient, in, out)).start();
                 } // cas de reception d'un acquitement
                 else if (s.contains("ACK")) {
-                    int index_s = s.indexOf("/");
-                    int index_s2 = s.indexOf("/", index_s+1);
-                    //System.out.println(index_s + ", " + index_s2 + " ," + s.length());
-                    String id_msg = s.substring(index_s + 1,index_s2);
-                    String Ip_origine = socketClient.getInetAddress()
-                            .getHostAddress().toString();
-                    //System.out.println(Ip_origine + " taille : " + Ip_origine.length());
-                    Ip_origine = Ip_origine.replaceFirst("/", "");
-                    //long time = System.nanoTime();
-                    if (c_messages_received.containsKey(id_msg)) {
-                        c_messages_received.get(id_msg).put(Ip_origine, true);
-                    }
-                    if (c_messages_sent.containsKey(id_msg)) {
-                        c_messages_sent.get(id_msg).put(Ip_origine, true);
-                    }
-                    //time = System.nanoTime() - time;
-                    //System.out.println("Ack traitement : "+ time +" length c_sent pui c_receive " + c_messages_sent.size() + " ," + c_messages_received.size());
+//                    int index_s = s.indexOf("/");
+//                    int index_s2 = s.indexOf("/", index_s+1);
+//                    //System.out.println(index_s + ", " + index_s2 + " ," + s.length());
+//                    String id_msg = s.substring(index_s + 1,index_s2);
+//                    String Ip_origine = socketClient.getInetAddress()
+//                            .getHostAddress().toString();
+//                    //System.out.println(Ip_origine + " taille : " + Ip_origine.length());
+//                    Ip_origine = Ip_origine.replaceFirst("/", "");
+//                    //long time = System.nanoTime();
+//                    if (c_messages_received.containsKey(id_msg)) {
+//                        c_messages_received.get(id_msg).put(Ip_origine, true);
+//                    }
+//                    if (c_messages_sent.containsKey(id_msg)) {
+//                        c_messages_sent.get(id_msg).put(Ip_origine, true);
+//                    }
+                    new Thread(new Ack(socketClient, s, c_messages_sent, c_messages_received)).start();
                 } else if (s.contains("Connected")) {
                     String Ip_origine = socketClient.getInetAddress()
                             .getHostAddress().toString();
                     cont_connected.put(Ip_origine, true);
                 }// cas reception d'un message
                 else if (b_read != -1) {
-                    int cpt = 0;
-                    //long time_max = System.nanoTime();
-                    //long cpt = 0;
-                    while ((b_read = in.read(down_packet,0,1000000)) != -1) {
-                        cpt++;
-                        s += new String(down_packet, "UTF-8");
-                    }
-                    if (s.length() < 200){
-                        System.out.println(s);
-                    }
-                     System.out.println(cpt + " iteration sur la while b_read");
-                    //long time_bread = System.nanoTime() - time_max;
-                    
-                    //time_all = System.nanoTime();
-                    int index_s = s.indexOf("/");
-                    int index_s2 = s.indexOf("/", index_s+1);
-                    //System.out.println(index_s + ", " + index_s2 + " ," + s.length());
-                    String id_msg = s.substring(index_s + 1,index_s2);
-                    String msg = s.substring(index_s2+1, s.length()-1);
-                    String Ip_origine = socketClient.getInetAddress()
-                            .getHostAddress().toString();
-                    //System.out.println(Ip_origine + " taille : " + Ip_origine.length());
-                    Ip_origine = Ip_origine.replaceFirst("/", "");
-                    //long time_str = System.nanoTime() - time_all;
-
-                    
-                    //long time_ccr = System.nanoTime();
-                    ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
-                    for (String ip : context.keySet()) {
-                        if (Ip_origine.equals(ip)) {
-                            context_message.put(ip, true);
-                        } else {
-                            context_message.put(ip, false);
-                        }
-                    }   
-                    c_messages_received.put(id_msg, context_message);
-                    messages_received.put(id_msg, msg);
-                    //time_ccr = System.nanoTime() - time_ccr;
-                    
-                    
-                    //time_all = System.nanoTime();
-                    Broadcast broad = new Broadcast("/" + id_msg + "/" + "ACK", context);
-                    broad.run();
+//                    int cpt = 0;
+//                    //long time_max = System.nanoTime();
+//                    //long cpt = 0;
+//                    while ((b_read = in.read(down_packet,0,1000000)) != -1) {
+//                        cpt++;
+//                        s += new String(down_packet, "UTF-8");
+//                    }
+//                    if (s.length() < 200){
+//                        System.out.println(s);
+//                    }
+//                     System.out.println(cpt + " iteration sur la while b_read");
+//                    //long time_bread = System.nanoTime() - time_max;
+//                    
+//                    //time_all = System.nanoTime();
+//                    int index_s = s.indexOf("/");
+//                    int index_s2 = s.indexOf("/", index_s+1);
+//                    //System.out.println(index_s + ", " + index_s2 + " ," + s.length());
+//                    String id_msg = s.substring(index_s + 1,index_s2);
+//                    String msg = s.substring(index_s2+1, s.length()-1);
+//                    String Ip_origine = socketClient.getInetAddress()
+//                            .getHostAddress().toString();
+//                    //System.out.println(Ip_origine + " taille : " + Ip_origine.length());
+//                    Ip_origine = Ip_origine.replaceFirst("/", "");
+//                    //long time_str = System.nanoTime() - time_all;
+//
+//                    
+//                    //long time_ccr = System.nanoTime();
+//                    ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
+//                    for (String ip : context.keySet()) {
+//                        if (Ip_origine.equals(ip)) {
+//                            context_message.put(ip, true);
+//                        } else {
+//                            context_message.put(ip, false);
+//                        }
+//                    }   
+//                    c_messages_received.put(id_msg, context_message);
+//                    messages_received.put(id_msg, msg);
+//                    //time_ccr = System.nanoTime() - time_ccr;
+//                    
+//                    
+//                    //time_all = System.nanoTime();
+//                    Broadcast broad = new Broadcast("/" + id_msg + "/" + "ACK", context);
+//                    broad.run();
+                    new Thread(new MessageHandler(socketClient, s, c_messages_sent, c_messages_received, messages_received, messages_sent, context, in, out)).start();
                     //long time_brd = System.nanoTime() - time_all;
                     
                     //time_max = System.nanoTime() - time_max;
                     //System.out.println("Temps total: " + time_max + "%bread, %str, %ccr, %brd "+ (float)time_bread*100/time_max + " ," + (float)time_str*100/time_max + " ," +(float) time_ccr*100/time_max +" ,"+(float)time_brd*100/time_max);
                 }
-                socketClient.close();
+                //socketClient.close();
                 long time_since_start = System.nanoTime() - time_start;
                 //time_moy = time_since_start/cpt_run;
                 System.out.println("temps moyen : "+ time_since_start);
