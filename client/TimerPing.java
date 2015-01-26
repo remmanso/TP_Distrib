@@ -49,7 +49,7 @@ public class TimerPing extends TimerTask {
             b = s.getBytes();
                     
             socket = new Socket(this.addresse, port);
-            socket.setSoTimeout(1000);
+            socket.setSoTimeout(2000);
 
             out = new DataOutputStream(socket.getOutputStream());
             in = new DataInputStream(socket.getInputStream());

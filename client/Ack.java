@@ -19,8 +19,8 @@ import java.util.logging.Logger;
 
 public class Ack implements Runnable {
     
-    private Socket socket;
-    private String msg;
+    private final Socket socket;
+    private final String msg;
     private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
     private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
     
@@ -38,13 +38,10 @@ public class Ack implements Runnable {
         try {
             int index_s = msg.indexOf("/");
             int index_s2 = msg.indexOf("/", index_s+1);
-            //System.out.println(index_s + ", " + index_s2 + " ," + s.length());
             String id_msg = msg.substring(index_s + 1,index_s2);
             String Ip_origine = socket.getInetAddress()
-                    .getHostAddress().toString();
-            //System.out.println(Ip_origine + " taille : " + Ip_origine.length());
-            Ip_origine = Ip_origine.replaceFirst("/", "");
-            //long time = System.nanoTime();
+                    .getHostAddress();
+            Ip_origine.replaceFirst("/", "");
             if (c_messages_received.containsKey(id_msg)) {
                 c_messages_received.get(id_msg).put(Ip_origine, true);
             }

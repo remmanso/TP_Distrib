@@ -23,10 +23,11 @@ import java.util.logging.Logger;
  *
  * @author mansourr
  */
-public class Broadcast {
+public class Broadcast implements Runnable {
 
     private String message;
     private Socket socket;
+    private Socket socketClient;
     private ConcurrentHashMap<String, Boolean> list_adr;
     private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
     private ConcurrentHashMap<String, String> messages_sent = new ConcurrentHashMap<String, String>();
@@ -47,16 +48,22 @@ public class Broadcast {
         this.message = message;
         this.list_adr = list_adr;
     }
+    
+    public Broadcast(String message, ConcurrentHashMap<String, Boolean> list_adr, Socket socketClient) {
+        this.message = message;
+        this.list_adr = list_adr;
+        this.socketClient = socketClient;
+    }
 
     public void run() {
         try {
             DataInputStream in;
             DataOutputStream out;
-            long time_total = System.nanoTime();
-            long time = System.nanoTime();
+//            long time_total = System.nanoTime();
+            long time_start = System.nanoTime();
             if (!message.contains("ACK") && !message.isEmpty()) {
                 
-                String m = message
+                String m = System.nanoTime() 
                         + InetAddress.getLocalHost().getHostAddress();
                 
                 String original_message = message;
@@ -74,8 +81,10 @@ public class Broadcast {
                         original_message);
             }
             byte b[] = message.getBytes();
-            time = System.nanoTime();
+//            time = System.nanoTime();
+            int i = 0;
             for (String s : list_adr.keySet()) {
+                i ++;
                 if ("LocalHost".equals(s) || !list_adr.get(s)) {
                     continue;
                 }
@@ -84,18 +93,21 @@ public class Broadcast {
                 in = new DataInputStream(socket.getInputStream());
                 
                 out.write(b,0,b.length);
-                time = System.nanoTime();
+//                time = System.nanoTime();
                 /*if (!message.contains("ping")) {
                     System.out.println("BROADCAST : " + message.length());
                 }*/
                 out.flush();
                 socket.close();
             }
-            time = System.nanoTime() - time;
-            if (!message.contains("ACK") && !message.isEmpty()){
-                time_total = System.nanoTime() - time_total;
-                System.out.println("total time , prcent " + time_total + " stringprcent " + (float)time*100/time_total);
-            }
+//            time = System.nanoTime() - time;
+//            if (!message.contains("ACK") && !message.isEmpty()){
+//                time_total = System.nanoTime() - time_total;
+//               // System.out.println("total time , prcent " + time_total + " stringprcent " + (float)time*100/time_total);
+//            }
+            if (socketClient != null)
+                socketClient.close();
+//            System.out.println(Thread.currentThread() + ", envoi d'un message temps mis : " + (System.nanoTime() - time_start) + "ns, itérations :" + i);
         } catch (UnknownHostException e) {
             e.printStackTrace();
             if(socket != null)

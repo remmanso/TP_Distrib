@@ -1,4 +1,6 @@
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -18,15 +20,15 @@ import java.util.logging.Logger;
  * @author mansourr
  */
 public class MessageHandler implements Runnable{
-    private Socket socketClient;
-    private DataInputStream in;
-    private DataOutputStream out;
-    private String s;
+    private final Socket socketClient;
+    private final DataInputStream in;
+    private final DataOutputStream out;
+    private final String s;
     private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
     private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
     private ConcurrentHashMap<String, String> messages_received = new ConcurrentHashMap<String, String>();
     private ConcurrentHashMap<String, Boolean> context;
-    //private byte[] down_packet;
+    //private byte[] down;
     
     public MessageHandler(Socket socketclient,
             String msg,
@@ -43,20 +45,29 @@ public class MessageHandler implements Runnable{
         this.c_messages_received = c_messages_received;
         this.messages_received = messages_received;
         this.context = context;
+        this.in = in;
+        this.out = out;
         //this.down_packet = down_packet;
     }
     
     public void run(){
         try {
-            byte down_packet[] = new byte[1000000];
+            long time_start = System.nanoTime();
             int b_read = 0;
-            while ((b_read = in.read(down_packet,0,1000000)) != -1) {
-                s += new String(down_packet, "UTF-8");
+            int i = 0;
+            byte b;
+            byte down_packet[] = new byte[1005000];
+            long time = System.nanoTime();
+            long time_moy = 0;
+            while ((b_read = in.read(down_packet)) != -1) {
+                i++;
+                //time = System.nanoTime();
+                //s += new String(down_packet);
+                time_moy = (System.nanoTime() - time)/i;
             }
-            if (s.length() < 200){
-                System.out.println(s);
-            }
-             //System.out.println(cpt + " iteration sur la while b_read");
+            System.out.println(s);
+            System.out.println(Thread.currentThread() + ", réponse à message temps mis : " + (System.nanoTime() - time_start) + "ns, itérations :" + i + " tps_moy : " + time_moy);
+            //System.out.println(i + " iteration sur la while b_read, tps moy par iteration  " + time_moy);
             //long time_bread = System.nanoTime() - time_max;
 
             //time_all = System.nanoTime();
@@ -79,9 +90,10 @@ public class MessageHandler implements Runnable{
             }   
             c_messages_received.put(id_msg, context_message);
             messages_received.put(id_msg, msg);
-            Broadcast broad = new Broadcast("/" + id_msg + "/" + "ACK", context);
-            broad.run();
-            //socketClient.close();
+            new Thread(new Broadcast("/" + id_msg + "/" + "ACK", context, socketClient)).start();
+                    
+                    
+                
         } catch (IOException ex) {
             Logger.getLogger(Ack.class.getName()).log(Level.SEVERE, null, ex);
         }

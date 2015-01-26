@@ -23,6 +23,7 @@ public class CalculDebitMessage implements Runnable {
                 System.out.printf("debit :  %.2f Mb/s \n",(double)(counter_debit.get()*8 
                         *Math.pow(10,9)/(System.nanoTime() - time_start)));
                 time = System.nanoTime();
+                //System.out.println("Thread Infos : " + Thread.activeCount());
                 //counter_debit.reset();
             }
         }

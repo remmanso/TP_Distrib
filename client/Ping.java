@@ -1,4 +1,6 @@
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -17,23 +19,21 @@ import java.util.logging.Logger;
  */
 public class Ping implements Runnable {
     
-    private Socket socket;
-    private DataInputStream in;
-    private DataOutputStream out;
+    private final Socket socket;
+    private final DataOutputStream out;
     
     public Ping(Socket socketclient, 
-            DataInputStream in, 
             DataOutputStream out){
         this.socket = socketclient;
-        this.in =in;
         this.out=out;
-        
     }
     
     public void run(){
         try {
             byte data_out[] = new byte[64];
+            //System.out.printf(new String(data_out));
             out.write(data_out);
+            out.flush();
             socket.close();
         } catch (IOException ex) {
             Logger.getLogger(Ping.class.getName()).log(Level.SEVERE, null, ex);

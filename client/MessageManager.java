@@ -31,14 +31,13 @@ public class MessageManager implements Runnable {
         byte[] downpacket = new byte[1000000];
         new Random().nextBytes(downpacket);
         String message = new String(downpacket);
-        Broadcast b = new Broadcast(message, context,
+        Broadcast b = new Broadcast("HEHE"+message, context,
                 c_messages_sent, messages_sent);
         while (!debit || context.contains(true)) {
             if (!debit) {
                 message = messageDefinition(cpt);
                 b.setMessage(message);
             }
-
             b.run();
 
             try {

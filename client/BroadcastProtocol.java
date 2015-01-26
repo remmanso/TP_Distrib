@@ -63,7 +63,7 @@ public class BroadcastProtocol {
         Broadcast broad = new Broadcast("Connected", context);
         broad.run();
         while (cont_connected.contains(false)) {
-            Thread.sleep(100);
+            Thread.sleep(133);
             broad.run();
             if (context.contains(false)) {
                 for (String s : context.keySet()) {
