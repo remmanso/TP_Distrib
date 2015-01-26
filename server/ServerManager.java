@@ -51,23 +51,25 @@ public class ServerManager implements Runnable {
             //System.out.println("INSIDE SERVER MANAGER");
             Socket socketClient;
 //            long cpt_run = 0;
-//            long time_start = System.nanoTime();
+            long time_start = System.nanoTime();
 //            long time_moy;
+            
+            byte down_packet[] = new byte[cont_connected.size() * 10000 + 1000000];
             while (true) {
                 //cpt_run++;
                 while ((socketClient = sockets.poll()) == null) {
-//                    try {
-//                        Thread.sleep(10);
-//                    } catch (InterruptedException ex) {
-//                        Logger.getLogger(ServerManager.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(ServerManager.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
                 //long time_all = System.nanoTime();
-                BufferedOutputStream out = new BufferedOutputStream(
+                DataOutputStream out = new DataOutputStream(
                         socketClient.getOutputStream());
-                BufferedInputStream in = new BufferedInputStream(
+                DataInputStream in = new DataInputStream(
                         socketClient.getInputStream());
-                byte down_packet[] = new byte[1000000];
+               // System.out.println(cont_connected.size());
                 
                 int b_read = in.read(down_packet);
                 String s = new String(down_packet);
@@ -79,7 +81,11 @@ public class ServerManager implements Runnable {
                     System.out.println("ACK ? or CONNECTED ?" + s.contains("ACK") + "," + s.contains("Connected") + ". taille packet : " + s.length());
                 }*/
                 // cas reception d'un ping
+                System.out.println("length() " + s.length());
+                long time = System.nanoTime();
                 if (s.contains("ping")) {
+                    time = System.nanoTime() - time;
+                    System.out.println("temps pour contains " + time);
                     byte data_out[] = new byte[64];
                     out.write(data_out);
                 } // cas de reception d'un acquitement
@@ -110,14 +116,14 @@ public class ServerManager implements Runnable {
                     int cpt = 0;
                     //long time_max = System.nanoTime();
                     //long cpt = 0;
-                    while ((b_read = in.read(down_packet)) != -1) {
+                    while ((b_read = in.read(down_packet,0,1000000)) != -1) {
                         cpt++;
                         s += new String(down_packet, "UTF-8");
                     }
                     if (s.length() < 200){
                         System.out.println(s);
                     }
-                    //System.out.println(cpt + " iteration sur la while b_read");
+                     System.out.println(cpt + " iteration sur la while b_read");
                     //long time_bread = System.nanoTime() - time_max;
                     
                     //time_all = System.nanoTime();
@@ -141,7 +147,7 @@ public class ServerManager implements Runnable {
                         } else {
                             context_message.put(ip, false);
                         }
-                    }
+                    }   
                     c_messages_received.put(id_msg, context_message);
                     messages_received.put(id_msg, msg);
                     //time_ccr = System.nanoTime() - time_ccr;
@@ -156,9 +162,9 @@ public class ServerManager implements Runnable {
                     //System.out.println("Temps total: " + time_max + "%bread, %str, %ccr, %brd "+ (float)time_bread*100/time_max + " ," + (float)time_str*100/time_max + " ," +(float) time_ccr*100/time_max +" ,"+(float)time_brd*100/time_max);
                 }
                 socketClient.close();
-                //long time_since_start = System.nanoTime() - time_start;
+                long time_since_start = System.nanoTime() - time_start;
                 //time_moy = time_since_start/cpt_run;
-                //System.out.println("temps moyen : "+ time_moy);
+                System.out.println("temps moyen : "+ time_since_start);
             }
         } catch (SocketException e) {
             //new Thread(new ServerManager(sockets, cont_connected)).start();

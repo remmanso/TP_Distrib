@@ -82,7 +82,9 @@ public class Broadcast {
                 socket = new Socket(s, 2010);
                 out = new DataOutputStream(socket.getOutputStream());
                 in = new DataInputStream(socket.getInputStream());
-                out.write(b);
+                
+                out.write(b,0,b.length);
+                time = System.nanoTime();
                 /*if (!message.contains("ping")) {
                     System.out.println("BROADCAST : " + message.length());
                 }*/
@@ -92,10 +94,10 @@ public class Broadcast {
             time = System.nanoTime() - time;
             if (!message.contains("ACK") && !message.isEmpty()){
                 time_total = System.nanoTime() - time_total;
-                //System.out.println("total time , prcent " + time_total + " stringprcent " + (float)time*100/time_total);
+                System.out.println("total time , prcent " + time_total + " stringprcent " + (float)time*100/time_total);
             }
         } catch (UnknownHostException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
             if(socket != null)
                 System.out.println("UnknownHostException : La connexion avec " + socket.getInetAddress().getHostName() +" a été coupée.");
             else
@@ -105,7 +107,7 @@ public class Broadcast {
                 System.out.println("SocketException : La connexion avec " + socket.getInetAddress().getHostName() +" a été coupée.");
             else
                 System.out.println("SocketException : une socket est passé à null");
-            //e.printStackTrace();
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
