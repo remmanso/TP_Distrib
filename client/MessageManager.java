@@ -44,9 +44,6 @@ public class MessageManager implements Runnable {
                 if (!debit) {
                     Thread.sleep(2000);
                 }
-                /*else
-                    Thread.sleep(1000);
-                        */
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -57,7 +54,7 @@ public class MessageManager implements Runnable {
     private String messageDefinition(int cpt) {
 
         try {
-            String s = "Hello n°" + cpt + " from " + InetAddress.getLocalHost();
+            String s = "Hello n��" + cpt + " from " + InetAddress.getLocalHost();
             return s;
         } catch (UnknownHostException e) {
             e.printStackTrace();

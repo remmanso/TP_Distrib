@@ -68,8 +68,6 @@ public class Broadcast implements Runnable {
                 
                 String original_message = message;
                 message = "/" + m.hashCode() + "/" + message;
-                
-                //System.out.println("temps pour str : " + time);
                 ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
 
                 for (String ip : list_adr.keySet()) {
@@ -94,31 +92,23 @@ public class Broadcast implements Runnable {
                 
                 out.write(b,0,b.length);
 //                time = System.nanoTime();
-                /*if (!message.contains("ping")) {
-                    System.out.println("BROADCAST : " + message.length());
-                }*/
                 out.flush();
                 socket.close();
             }
 //            time = System.nanoTime() - time;
-//            if (!message.contains("ACK") && !message.isEmpty()){
-//                time_total = System.nanoTime() - time_total;
-//               // System.out.println("total time , prcent " + time_total + " stringprcent " + (float)time*100/time_total);
-//            }
             if (socketClient != null)
                 socketClient.close();
-//            System.out.println(Thread.currentThread() + ", envoi d'un message temps mis : " + (System.nanoTime() - time_start) + "ns, itérations :" + i);
         } catch (UnknownHostException e) {
             e.printStackTrace();
             if(socket != null)
-                System.out.println("UnknownHostException : La connexion avec " + socket.getInetAddress().getHostName() +" a été coupée.");
+                System.out.println("UnknownHostException : La connexion avec " + socket.getInetAddress().getHostName() +" a ��t�� coup��e.");
             else
-                System.out.println("UnknownHostException : une socket est passé à null");
+                System.out.println("UnknownHostException : une socket est pass�� �� null");
         } catch (SocketException e) {
             if(socket != null)
-                System.out.println("SocketException : La connexion avec " + socket.getInetAddress().getHostName() +" a été coupée.");
+                System.out.println("SocketException : La connexion avec " + socket.getInetAddress().getHostName() +" a ��t�� coup��e.");
             else
-                System.out.println("SocketException : une socket est passé à null");
+                System.out.println("SocketException : une socket est pass�� �� null");
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
