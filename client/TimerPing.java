@@ -33,6 +33,14 @@ public class TimerPing extends TimerTask {
         this.port = port;
         this.context = context;
     }
+    
+    public TimerPing(Socket socket,
+            ConcurrentHashMap<String, Boolean> context) {
+        this.socket = socket;
+        this.port = socket.getPort();
+        this.addresse = socket.getInetAddress().toString();
+        this.context = context;
+    }
 
     public void run() {
         try {
@@ -48,7 +56,7 @@ public class TimerPing extends TimerTask {
             s = "ping".concat(s);
             b = s.getBytes();
                     
-            socket = new Socket(this.addresse, port);
+            //socket = new Socket(this.addresse, port);
             socket.setSoTimeout(2000);
 
             out = new DataOutputStream(socket.getOutputStream());
@@ -58,7 +66,7 @@ public class TimerPing extends TimerTask {
             b_read = in.read(b);
 
             context.put(addresse, true);
-            socket.close();
+            //socket.close();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (ConnectException e) {

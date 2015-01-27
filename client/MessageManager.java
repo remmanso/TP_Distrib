@@ -1,8 +1,13 @@
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Random;
 import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MessageManager implements Runnable {
 
@@ -31,8 +36,17 @@ public class MessageManager implements Runnable {
         byte[] downpacket = new byte[1000000];
         new Random().nextBytes(downpacket);
         String message = new String(downpacket);
+        ConcurrentLinkedQueue<Socket> sockets = new ConcurrentLinkedQueue<Socket>();
+        for (String s :context.keySet()){
+            try {
+                sockets.add(new Socket(s,2010));
+            } catch (IOException ex) {
+                Logger.getLogger(MessageManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         Broadcast b = new Broadcast("HEHE"+message, context,
-                c_messages_sent, messages_sent);
+                c_messages_sent, messages_sent, sockets);
+
         while (!debit || context.contains(true)) {
             if (!debit) {
                 message = messageDefinition(cpt);

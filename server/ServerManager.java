@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 public class ServerManager implements Runnable {
 
-    ConcurrentLinkedQueue<Socket> sockets;
+   Socket sockets;
     private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
     private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
     private ConcurrentHashMap<String, String> messages_received = new ConcurrentHashMap<String, String>();
@@ -21,14 +21,14 @@ public class ServerManager implements Runnable {
     private ConcurrentHashMap<String, Boolean> context;
     private ConcurrentHashMap<String, Boolean> cont_connected;
 
-    public ServerManager(ConcurrentLinkedQueue<Socket> sockets,
+    public ServerManager(Socket sockets,
                         ConcurrentHashMap<String, Boolean> cont_connect) {
         this.sockets = sockets;
         this.cont_connected = cont_connect;
     }
 
     public ServerManager(
-            ConcurrentLinkedQueue<Socket> sockets,
+            Socket sockets,
             ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent,
             ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received,
             ConcurrentHashMap<String, String> messages_received,
@@ -50,7 +50,7 @@ public class ServerManager implements Runnable {
         try {
             
             //System.out.println("INSIDE SERVER MANAGER");
-            Socket socketClient;
+            Socket socketClient = this.sockets;
 //            long cpt_run = 0;
             long time_start = System.nanoTime();
             int b_read;
@@ -62,13 +62,13 @@ public class ServerManager implements Runnable {
             while (true) {
                 int i = 0;
                 //cpt_run++;
-                while ((socketClient = sockets.poll()) == null) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(ServerManager.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
+//                while ((socketClient = sockets.poll()) == null) {
+//                    try {
+//                        Thread.sleep(10);
+//                    } catch (InterruptedException ex) {
+//                        Logger.getLogger(ServerManager.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                }
                 long time_all = System.nanoTime();
                  out = new DataOutputStream(
                         socketClient.getOutputStream());

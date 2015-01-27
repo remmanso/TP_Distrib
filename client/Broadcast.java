@@ -11,6 +11,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,21 +29,37 @@ public class Broadcast implements Runnable {
     private String message;
     private Socket socket;
     private Socket socketClient;
+    private ConcurrentLinkedQueue<Socket> sockets;
     private ConcurrentHashMap<String, Boolean> list_adr;
     private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
     private ConcurrentHashMap<String, String> messages_sent = new ConcurrentHashMap<String, String>();
 
+//    public Broadcast(
+//            String message,
+//            ConcurrentHashMap<String, Boolean> list_adr,
+//            ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent,
+//            ConcurrentHashMap<String, String> messages_sent) {
+//        //super();
+//        this.message = message;
+//        this.list_adr = list_adr;
+//        this.c_messages_sent = c_messages_sent;
+//        this.messages_sent = messages_sent;
+//    }
+    
     public Broadcast(
             String message,
             ConcurrentHashMap<String, Boolean> list_adr,
             ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent,
-            ConcurrentHashMap<String, String> messages_sent) {
+            ConcurrentHashMap<String, String> messages_sent,
+            ConcurrentLinkedQueue<Socket> sockets) {
         //super();
         this.message = message;
         this.list_adr = list_adr;
         this.c_messages_sent = c_messages_sent;
         this.messages_sent = messages_sent;
+        this.sockets = this.sockets;
     }
+    
 
     public Broadcast(String message, ConcurrentHashMap<String, Boolean> list_adr) {
         this.message = message;
@@ -54,7 +71,7 @@ public class Broadcast implements Runnable {
         this.list_adr = list_adr;
         this.socketClient = socketClient;
     }
-
+    
     public void run() {
         try {
             DataInputStream in;
@@ -83,30 +100,42 @@ public class Broadcast implements Runnable {
             byte b[] = message.getBytes();
 //            time = System.nanoTime();
             int i = 0;
-            for (String s : list_adr.keySet()) {
-                i ++;
-                if ("LocalHost".equals(s) || !list_adr.get(s)) {
+//            for (String s : list_adr.keySet()) {
+//                i ++;
+//                if ("LocalHost".equals(s) || !list_adr.get(s)) {
+//                    continue;
+//                }
+//                socket = new Socket(s, 2010);
+//                out = new DataOutputStream(socket.getOutputStream());
+//                in = new DataInputStream(socket.getInputStream());
+//                
+//                out.write(b,0,b.length);
+////                time = System.nanoTime();
+//                /*if (!message.contains("ping")) {
+//                    System.out.println("BROADCAST : " + message.length());
+//                }*/
+//                out.flush();
+//                socket.close();
+//            }
+            for (Socket socket :sockets) {
+                
+                if (!list_adr.get(socket.getRemoteSocketAddress().toString())) {
                     continue;
                 }
-                socket = new Socket(s, 2010);
                 out = new DataOutputStream(socket.getOutputStream());
                 in = new DataInputStream(socket.getInputStream());
                 
                 out.write(b,0,b.length);
-//                time = System.nanoTime();
-                /*if (!message.contains("ping")) {
-                    System.out.println("BROADCAST : " + message.length());
-                }*/
                 out.flush();
-                socket.close();
+                //socket.close();
             }
 //            time = System.nanoTime() - time;
 //            if (!message.contains("ACK") && !message.isEmpty()){
 //                time_total = System.nanoTime() - time_total;
 //               // System.out.println("total time , prcent " + time_total + " stringprcent " + (float)time*100/time_total);
 //            }
-            if (socketClient != null)
-                socketClient.close();
+//            if (socketClient != null)
+//                socketClient.close();
 //            System.out.println(Thread.currentThread() + ", envoi d'un message temps mis : " + (System.nanoTime() - time_start) + "ns, itérations :" + i);
         } catch (UnknownHostException e) {
             e.printStackTrace();

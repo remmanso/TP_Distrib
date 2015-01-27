@@ -57,10 +57,12 @@ public class Listener implements Runnable {
     public void run() {
         try {
             ServerSocket socketserver = new ServerSocket(port);
+            
             ConcurrentLinkedQueue<Socket> sockets = new ConcurrentLinkedQueue<Socket>();
-            new Thread(new ServerManager(sockets, c_messages_sent, c_messages_received, messages_received, messages_sent, context, cont_connected)).start();
+//            new Thread(new ServerManager(sockets, c_messages_sent, c_messages_received, messages_received, messages_sent, context, cont_connected)).start();
             while (true) {
-                sockets.add(socketserver.accept());
+                //sockets.add(socketserver.accept());
+                new Thread(new ServerManager(socketserver.accept(), c_messages_sent, c_messages_received, messages_received, messages_sent, context, cont_connected)).start();
             }
         } catch (IOException ex) {
             Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);
