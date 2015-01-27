@@ -16,34 +16,30 @@ public class MessageManager implements Runnable {
     private ConcurrentHashMap<String, String> messages_sent;
     private DeliveredCounter counter_debit;
     private boolean debit;
+    private ConcurrentLinkedQueue<Socket> sockets;
             
     public MessageManager(
             ConcurrentHashMap<String, Boolean> context,
             ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent,
             ConcurrentHashMap<String, String> messages_sent,
-            DeliveredCounter counter_debit, boolean debit) {
+            DeliveredCounter counter_debit, boolean debit,
+            ConcurrentLinkedQueue<Socket> sockets) {
         super();
         this.context = context;
         this.c_messages_sent = c_messages_sent;
         this.messages_sent = messages_sent;
         this.counter_debit = counter_debit;
         this.debit = debit;
+        this.sockets = sockets;
     }
 
     @Override
     public void run() {
+        System.out.println("Started");
         int cpt = 1;
         byte[] downpacket = new byte[1000000];
         new Random().nextBytes(downpacket);
         String message = new String(downpacket);
-        ConcurrentLinkedQueue<Socket> sockets = new ConcurrentLinkedQueue<Socket>();
-        for (String s :context.keySet()){
-            try {
-                sockets.add(new Socket(s,2010));
-            } catch (IOException ex) {
-                Logger.getLogger(MessageManager.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
         Broadcast b = new Broadcast("HEHE"+message, context,
                 c_messages_sent, messages_sent, sockets);
 

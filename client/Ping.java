@@ -30,13 +30,16 @@ public class Ping implements Runnable {
     
     public void run(){
         try {
-            byte data_out[] = new byte[64];
-            //System.out.printf(new String(data_out));
-            out.write(data_out);
-            out.flush();
-            socket.close();
+            byte b[] = new byte[64];
+            //b[0]=1;
+            //System.out.println(new String(b));
+            String s = new String(b);
+            s = "ping".concat(s);
+            b = s.getBytes();
+            //data_out = ("pong" + data_out.toString()).getBytes();
+            out.write(b);
         } catch (IOException ex) {
-            Logger.getLogger(Ping.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Ping.class.getName()).log(Level.SEVERE, "etat des variable out & socket" + out + "  ," + socket, ex);
         }
     }
 }

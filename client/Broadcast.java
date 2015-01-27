@@ -57,20 +57,25 @@ public class Broadcast implements Runnable {
         this.list_adr = list_adr;
         this.c_messages_sent = c_messages_sent;
         this.messages_sent = messages_sent;
-        this.sockets = this.sockets;
+        this.sockets = sockets;
     }
     
 
-    public Broadcast(String message, ConcurrentHashMap<String, Boolean> list_adr) {
+//    public Broadcast(String message, ConcurrentHashMap<String, Boolean> list_adr) {
+//        this.message = message;
+//        this.list_adr = list_adr;
+//    }
+    public Broadcast(String message, ConcurrentHashMap<String, Boolean> list_adr,
+            ConcurrentLinkedQueue<Socket> sockets) {
         this.message = message;
         this.list_adr = list_adr;
+        this.sockets = sockets;
     }
-    
-    public Broadcast(String message, ConcurrentHashMap<String, Boolean> list_adr, Socket socketClient) {
-        this.message = message;
-        this.list_adr = list_adr;
-        this.socketClient = socketClient;
-    }
+//    public Broadcast(String message, ConcurrentHashMap<String, Boolean> list_adr, Socket socketClient) {
+//        this.message = message;
+//        this.list_adr = list_adr;
+//        this.socketClient = socketClient;
+//    }
     
     public void run() {
         try {
@@ -98,36 +103,14 @@ public class Broadcast implements Runnable {
                         original_message);
             }
             byte b[] = message.getBytes();
-//            time = System.nanoTime();
             int i = 0;
-//            for (String s : list_adr.keySet()) {
-//                i ++;
-//                if ("LocalHost".equals(s) || !list_adr.get(s)) {
-//                    continue;
-//                }
-//                socket = new Socket(s, 2010);
-//                out = new DataOutputStream(socket.getOutputStream());
-//                in = new DataInputStream(socket.getInputStream());
-//                
-//                out.write(b,0,b.length);
-////                time = System.nanoTime();
-//                /*if (!message.contains("ping")) {
-//                    System.out.println("BROADCAST : " + message.length());
-//                }*/
-//                out.flush();
-//                socket.close();
-//            }
-            for (Socket socket :sockets) {
-                
-                if (!list_adr.get(socket.getRemoteSocketAddress().toString())) {
+            for (Socket socket :sockets) {                
+                if (!list_adr.get(socket.getInetAddress().toString().substring(1))) {
                     continue;
                 }
-                out = new DataOutputStream(socket.getOutputStream());
-                in = new DataInputStream(socket.getInputStream());
-                
+                out = new DataOutputStream(socket.getOutputStream());                
                 out.write(b,0,b.length);
                 out.flush();
-                //socket.close();
             }
 //            time = System.nanoTime() - time;
 //            if (!message.contains("ACK") && !message.isEmpty()){

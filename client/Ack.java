@@ -19,8 +19,8 @@ import java.util.logging.Logger;
 
 public class Ack implements Runnable {
     
-    private final Socket socket;
-    private final String msg;
+    private Socket socket;
+    private String msg;
     private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
     private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
     
@@ -36,9 +36,12 @@ public class Ack implements Runnable {
     
     public void run(){
         try {
-            int index_s = msg.indexOf("/");
-            int index_s2 = msg.indexOf("/", index_s+1);
-            String id_msg = msg.substring(index_s + 1,index_s2);
+            byte down_packet[] = new byte[20];
+            socket.getInputStream().read(down_packet);
+            String id_msg = new String(down_packet);
+            //int index_s = msg.indexOf("/");
+            //int index_s2 = msg.indexOf("/", index_s+1);
+            //String id_msg = msg.substring(index_s + 1,index_s2);
             String Ip_origine = socket.getInetAddress()
                     .getHostAddress();
             Ip_origine.replaceFirst("/", "");
@@ -48,7 +51,7 @@ public class Ack implements Runnable {
             if (c_messages_sent.containsKey(id_msg)) {
                 c_messages_sent.get(id_msg).put(Ip_origine, true);
             }
-            socket.close();
+            System.out.println("Send Ack");
         } catch (IOException ex) {
             Logger.getLogger(Ack.class.getName()).log(Level.SEVERE, null, ex);
         }

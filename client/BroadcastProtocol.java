@@ -1,13 +1,15 @@
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class BroadcastProtocol {
-    
+
     public static void main(String[] args) throws IOException,
             InterruptedException {
 
@@ -28,6 +30,7 @@ public class BroadcastProtocol {
         ConcurrentHashMap<String, Boolean> context = new ConcurrentHashMap<String, Boolean>();
         ConcurrentHashMap<String, Boolean> cont_connected = new ConcurrentHashMap<String, Boolean>();
         String[] addresses = new String[args.length - 1];
+        Boolean init = new Boolean(false);
         int i = 0;
         for (String arg : args) {
             if (i == args.length - 1) {
@@ -45,22 +48,31 @@ public class BroadcastProtocol {
         ConcurrentHashMap<String, String> messages_received = new ConcurrentHashMap<String, String>();
 
         ConcurrentHashMap<String, String> messages_sent = new ConcurrentHashMap<String, String>();
-
+        ConcurrentLinkedQueue<Socket> sockets = new ConcurrentLinkedQueue<Socket>();
+        
         Thread t = new Thread(new FaultDetector(addresses, context, cont_connected, 2009));
         t.start();
-
+        
         Thread c2010 = new Thread(new Listener(2010, c_messages_sent,
                 c_messages_received, messages_received, messages_sent, context,
-                cont_connected));
+                cont_connected, sockets));
 
         Thread b = new Thread(new MessageManager(context, c_messages_sent,
-                messages_sent, counter_debit, debit));
+                messages_sent, counter_debit, debit, sockets));
 
         c2010.start();
         while (context.contains(false)) {
             Thread.sleep(10);
         }
-        Broadcast broad = new Broadcast("Connected", context);
+        for (String s :context.keySet()){
+            try {
+                sockets.add(new Socket(s,2010));
+            } catch (IOException ex) {
+                Logger.getLogger(MessageManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        Broadcast broad = new Broadcast("Connected", context, sockets);
+        
         broad.run();
         while (cont_connected.contains(false)) {
             Thread.sleep(133);
@@ -74,6 +86,7 @@ public class BroadcastProtocol {
             }
         }
         System.out.println("Connected");
+        Thread.sleep(500);
         b.start();
         if (debit) {
             new Thread(new CalculDebitMessage(counter_debit, 1000000)).start();

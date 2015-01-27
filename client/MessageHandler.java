@@ -28,6 +28,7 @@ public class MessageHandler implements Runnable{
     private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
     private ConcurrentHashMap<String, String> messages_received = new ConcurrentHashMap<String, String>();
     private ConcurrentHashMap<String, Boolean> context;
+    private ConcurrentLinkedQueue<Socket> sockets;
     //private byte[] down;
     
     public MessageHandler(Socket socketclient,
@@ -38,7 +39,8 @@ public class MessageHandler implements Runnable{
             ConcurrentHashMap<String, String> messages_sent,
             ConcurrentHashMap<String, Boolean> context,
             DataInputStream in, 
-            DataOutputStream out) {
+            DataOutputStream out,
+            ConcurrentLinkedQueue<Socket> sockets) {
         this.socketClient = socketclient;
         this.s = msg;
         this.c_messages_sent = c_messages_sent;
@@ -48,6 +50,7 @@ public class MessageHandler implements Runnable{
         this.in = in;
         this.out = out;
         //this.down_packet = down_packet;
+        this.sockets = sockets;
     }
     
     public void run(){
@@ -59,13 +62,11 @@ public class MessageHandler implements Runnable{
             byte down_packet[] = new byte[1005000];
             long time = System.nanoTime();
             long time_moy = 0;
+            
             while ((b_read = in.read(down_packet)) != -1) {
-                i++;
-                //time = System.nanoTime();
-                //s += new String(down_packet);
-                time_moy = (System.nanoTime() - time)/i;
+                in.skip(in.available());
             }
-            System.out.println(s);
+            //System.out.println(s);
             System.out.println(Thread.currentThread() + ", réponse à message temps mis : " + (System.nanoTime() - time_start) + "ns, itérations :" + i + " tps_moy : " + time_moy);
             //System.out.println(i + " iteration sur la while b_read, tps moy par iteration  " + time_moy);
             //long time_bread = System.nanoTime() - time_max;
@@ -87,12 +88,10 @@ public class MessageHandler implements Runnable{
             ConcurrentHashMap<String, Boolean> context_message = new ConcurrentHashMap<String, Boolean>();
             for (String ip : context.keySet()) {
                 context_message.put(ip, Ip_origine.equals(ip));
-            }   
+            }
             c_messages_received.put(id_msg, context_message);
             messages_received.put(id_msg, msg);
-            new Thread(new Broadcast("/" + id_msg + "/" + "ACK", context, socketClient)).start();
-                    
-                    
+            new Thread(new Broadcast("/" + id_msg + "/" + "ACK", context, sockets)).start();
                 
         } catch (IOException ex) {
             Logger.getLogger(Ack.class.getName()).log(Level.SEVERE, null, ex);

@@ -13,36 +13,39 @@ import java.util.logging.Logger;
 
 public class ServerManager implements Runnable {
 
-   Socket sockets;
+   Socket socket;
     private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
     private ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
     private ConcurrentHashMap<String, String> messages_received = new ConcurrentHashMap<String, String>();
     private ConcurrentHashMap<String, String> messages_sent = new ConcurrentHashMap<String, String>();
     private ConcurrentHashMap<String, Boolean> context;
     private ConcurrentHashMap<String, Boolean> cont_connected;
+    private ConcurrentLinkedQueue<Socket> sockets;
 
     public ServerManager(Socket sockets,
                         ConcurrentHashMap<String, Boolean> cont_connect) {
-        this.sockets = sockets;
+        this.socket = sockets;
         this.cont_connected = cont_connect;
     }
 
     public ServerManager(
-            Socket sockets,
+            Socket socket,
             ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_sent,
             ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>> c_messages_received,
             ConcurrentHashMap<String, String> messages_received,
             ConcurrentHashMap<String, String> messages_sent,
             ConcurrentHashMap<String, Boolean> context,
-            ConcurrentHashMap<String, Boolean> cont_connected) {
+            ConcurrentHashMap<String, Boolean> cont_connected,
+            ConcurrentLinkedQueue<Socket> sockets) {
         super();
-        this.sockets = sockets;
+        this.socket = socket;
         this.c_messages_sent = c_messages_sent;
         this.c_messages_received = c_messages_received;
         this.messages_received = messages_received;
         this.messages_sent = messages_sent;
         this.context = context;
         this.cont_connected = cont_connected;
+        this.sockets = sockets;
     }
 
     @Override
@@ -50,84 +53,52 @@ public class ServerManager implements Runnable {
         try {
             
             //System.out.println("INSIDE SERVER MANAGER");
-            Socket socketClient = this.sockets;
+            Socket socketClient = this.socket;
 //            long cpt_run = 0;
             long time_start = System.nanoTime();
             int b_read;
-            DataOutputStream out;
-            DataInputStream in;
+            DataOutputStream out = new DataOutputStream(
+                        socketClient.getOutputStream());
+            DataInputStream in = new DataInputStream(
+                        socketClient.getInputStream());
             String s;
 //            long time_moy;
             byte down_packet[] = new byte[100];
             while (true) {
                 int i = 0;
-                //cpt_run++;
-//                while ((socketClient = sockets.poll()) == null) {
-//                    try {
-//                        Thread.sleep(10);
-//                    } catch (InterruptedException ex) {
-//                        Logger.getLogger(ServerManager.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException ex) {
+//                    Logger.getLogger(ServerManager.class.getName()).log(Level.SEVERE, null, ex);
 //                }
-                long time_all = System.nanoTime();
-                 out = new DataOutputStream(
-                        socketClient.getOutputStream());
-                 in = new DataInputStream(
-                        socketClient.getInputStream());
-               //System.out.println(cont_connected.size());
-                
+//                long time_all = System.nanoTime();
                 b_read = in.read(down_packet);
                 s = new String(down_packet);
                 System.out.println(s);
-                /*
-                if (!s.contains("ping"))
-                    System.out.println("socketClient :"+ socketClient);
-                
-                if (b_read != -1 && !s.
-            new Thread(new ServerManager(sockets, c_messages_sent, c_messages_received, messages_received, messages_sent, context, cont_connected)).start();contains("ping")){
-                    System.out.println("ACK ? or CONNECTED ?" + s.contains("ACK") + "," + s.contains("Connected") + ". taille packet : " + s.length());
-                }*/
                 // cas reception d'un ping
-                //System.out.println("length() " + s.length());
                 long time = System.nanoTime();
                 if (s.contains("ping")) {
                     i=1;
-//                    time = System.nanoTime() - time;
-//                    System.out.println("temps pour contains " + time);
-//                    byte data_out[] = new byte[64];
-//                    out.write(data_out);
                     new Thread(new Ping(socketClient,out)).start();
+                    in.skip(in.available());
                 } // cas de reception d'un acquitement
                 else if (s.contains("ACK")) {
                     i=2;
-//                    int index_s = s.indexOf("/");
-//                    int index_s2 = s.indexOf("/", index_s+1);
-//                    //System.out.println(index_s + ", " + index_s2 + " ," + s.length());
-//                    String id_msg = s.substring(index_s + 1,index_s2);
-//                    String Ip_origine = socketClient.getInetAddress()
-//                            .getHostAddress().toString();
-//                    //System.out.println(Ip_origine + " taille : " + Ip_origine.length());
-//                    Ip_origine = Ip_origine.replaceFirst("/", "");
-//                    //long time = System.nanoTime();
-//                    if (c_messages_received.containsKey(id_msg)) {
-//                        c_messages_received.get(id_msg).put(Ip_origine, true);
-//                    }
-//                    if (c_messages_sent.containsKey(id_msg)) {
-//                        c_messages_sent.get(id_msg).put(Ip_origine, true);
-//                    }
                     new Thread(new Ack(socketClient, s, c_messages_sent, c_messages_received)).start();
+                    in.skip(in.available());
                 } else if (s.contains("Connected")) {
                     i = 3;
                     String Ip_origine = socketClient.getInetAddress()
                             .getHostAddress();
                     cont_connected.put(Ip_origine, true);
-                    socketClient.close();
+                    in.skip(in.available());
                 }// cas reception d'un message
                 else if (b_read != -1) {
                     i = 4;
-                    new Thread(new MessageHandler(socketClient, s, c_messages_sent, c_messages_received, messages_received, messages_sent, context, in, out)).start();
+                    System.out.println("access");
+                    new Thread(new MessageHandler(socket, s, c_messages_sent, c_messages_received, messages_received, messages_sent, context, in, out, sockets)).start();
                 }
-                s = "";
+                
 //                if (System.nanoTime() - time_start >= Math.pow(10,9)){
 //                    System.out.println(Thread.currentThread() + ", opération " + i +" temps mis : " + (System.nanoTime() - time_all) + "ns");
 //                    time_start = System.nanoTime();
@@ -137,9 +108,10 @@ public class ServerManager implements Runnable {
                 
                 //time_moy = time_since_start/cpt_run;
                 //System.out.println("temps moyen  & cpt Connected "+ time_since_start + " " + cpt);
+                //socket.shutdownInput();
             }
         } catch (SocketException e) {
-            //new Thread(new ServerManager(sockets, cont_connected)).start();
+            //new Thread(new ServerManager(socket, cont_connected)).start();
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();

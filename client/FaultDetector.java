@@ -27,31 +27,47 @@ public class FaultDetector implements Runnable {
     public void run() {
         TimerPing t_ping;
         Timer timer = new Timer();
-        ConcurrentLinkedQueue<Socket> sockets = new ConcurrentLinkedQueue<Socket>();
-        for (String s :context.keySet()){
-            try {
-                sockets.add(new Socket(s,2009));
-            } catch (IOException ex) {
-                Logger.getLogger(MessageManager.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        ConcurrentHashMap<Integer, Socket> sockets = new ConcurrentHashMap<Integer, Socket>();
+        
+        for (int i = 0; i < args.length; i++) {
+            //t_ping = new TimerPing(args[i], port, context, sockets.get(i));
+            //timer.scheduleAtFixedRate(t_ping, 1000, 1000);
+            timer.schedule(new TimedPing(args[i], port, context), 2000);
         }
-//        for (int i = 0; i < args.length; i++) {
-//            t_ping = new TimerPing(args[i], port, context);
+//        for (Socket s: sockets){
+//            t_ping = new TimerPing(args[i], port, context, s);
 //            timer.scheduleAtFixedRate(t_ping, 1000, 1000);
+//            i
 //        }
-        for (Socket s: sockets){
-            t_ping = new TimerPing(s, context);
-            timer.scheduleAtFixedRate(t_ping, 1000, 1000);
-        }
+        int i = 0;
+//        for (String s :context.keySet()){
+//            try {
+//                sockets.put(i,new Socket(s,2009));
+//            } catch (IOException ex) {
+//                Logger.getLogger(MessageManager.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//            i++;     
+//        }
         ServerSocket socketserver;
         try {
             socketserver = new ServerSocket(port);
             System.out.println("Le serveur est à l'écoute du port " + socketserver.getLocalPort());
 //            new Thread(new ServerManager(sockets, cont_connected)).start();
-
+            boolean init = true;
             while (true) {
 //                sockets.add(socketserver.accept());
                 new Thread(new ServerManager(socketserver.accept(), cont_connected)).start();
+//                if (init){
+//                    for (String s :context.keySet()){
+//                        try {
+//                            sockets.put(i,new Socket(s,2009));
+//                        } catch (IOException ex) {
+//                            Logger.getLogger(MessageManager.class.getName()).log(Level.SEVERE, null, ex);
+//                        }
+//                        i++;     
+//                    }
+//                    init = false;
+//                }
             }
         } catch (IOException e) {
             e.printStackTrace();
